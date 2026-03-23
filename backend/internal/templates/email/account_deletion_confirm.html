@@ -1,0 +1,10 @@
+<p>Hi {{.FirstName}},</p>
+<p>We received a request to <strong>permanently delete</strong> your account.</p>
+<p>If you made this request, your account will be scheduled for deletion. You can cancel this within <strong>7 days</strong> by clicking the button below.</p>
+<p><a class="btn" href="{{.CancelURL}}">Cancel Deletion</a></p>
+<p>If you do not cancel, your account and all associated data will be permanently removed after 7 days.</p>
+<p>If you did not request this, please contact support immediately.</p>
+<p><a href="{{.SupportURL}}">Contact Support</a></p>
+<hr/>
+<p>If the button above doesn't work, paste this URL into your browser:<br/>
+<a href="{{.CancelURL}}">{{.CancelURL}}</a></p>

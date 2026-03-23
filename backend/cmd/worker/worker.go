@@ -4,6 +4,8 @@ import (
 	"log"
 
 	"github.com/404nfidv2/go-nuxt-starter-kit/backend/internal/core"
+	"github.com/404nfidv2/go-nuxt-starter-kit/backend/internal/jobs"
+	"github.com/404nfidv2/go-nuxt-starter-kit/backend/internal/service"
 	"github.com/hibiken/asynq"
 	"github.com/redis/go-redis/v9"
 )
@@ -19,8 +21,10 @@ func startWorker(cfg *core.Config, rdb *redis.Client) {
 		asynq.Config{Concurrency: 10},
 	)
 
+	emailSender := service.NewEmailSender(cfg)
+
 	mux := asynq.NewServeMux()
-	// Job handlers will be registered here in Phase 4 & 5
+	mux.Handle(jobs.TypeSendEmail, jobs.NewEmailJobHandler(emailSender))
 
 	log.Println("worker ready, processing jobs...")
 	if err := srv.Run(mux); err != nil {

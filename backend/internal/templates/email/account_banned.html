@@ -1,0 +1,5 @@
+<p>Hi {{.FirstName}},</p>
+<p>Your account has been <strong>permanently banned</strong>.</p>
+{{if .Reason}}<p>Reason: {{.Reason}}</p>{{end}}
+<p>If you believe this is a mistake, please contact support.</p>
+<p><a class="btn" href="{{.SupportURL}}">Contact Support</a></p>

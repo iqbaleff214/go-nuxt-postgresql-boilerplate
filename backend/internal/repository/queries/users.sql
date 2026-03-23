@@ -105,22 +105,23 @@ RETURNING *;
 DELETE FROM users WHERE id = $1;
 
 -- name: ListUsers :many
+-- $3: '' = all, 'true' = verified only, 'false' = unverified only
 SELECT * FROM users
 WHERE deleted_at IS NULL
-  AND ($1::user_role IS NULL OR role = $1)
-  AND ($2::user_status IS NULL OR status = $2)
-  AND ($3::boolean IS NULL OR is_email_verified = $3)
-  AND ($4::text IS NULL OR email ILIKE '%' || $4 || '%' OR display_name ILIKE '%' || $4 || '%')
+  AND ($1 = '' OR role::text = $1)
+  AND ($2 = '' OR status::text = $2)
+  AND ($3 = '' OR is_email_verified = ($3 = 'true'))
+  AND ($4 = '' OR email ILIKE '%' || $4 || '%' OR display_name ILIKE '%' || $4 || '%')
 ORDER BY created_at DESC
 LIMIT $5 OFFSET $6;
 
 -- name: CountUsers :one
 SELECT COUNT(*) FROM users
 WHERE deleted_at IS NULL
-  AND ($1::user_role IS NULL OR role = $1)
-  AND ($2::user_status IS NULL OR status = $2)
-  AND ($3::boolean IS NULL OR is_email_verified = $3)
-  AND ($4::text IS NULL OR email ILIKE '%' || $4 || '%' OR display_name ILIKE '%' || $4 || '%');
+  AND ($1 = '' OR role::text = $1)
+  AND ($2 = '' OR status::text = $2)
+  AND ($3 = '' OR is_email_verified = ($3 = 'true'))
+  AND ($4 = '' OR email ILIKE '%' || $4 || '%' OR display_name ILIKE '%' || $4 || '%');
 
 -- name: ListUsersScheduledForHardDelete :many
 SELECT * FROM users

@@ -20,10 +20,10 @@ var emailRe = regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{
 
 // LoginResult is returned by Login.
 type LoginResult struct {
-	AccessToken      string
-	RefreshToken     string
+	AccessToken       string
+	RefreshToken      string
 	MFAChallengeToken string
-	Requires2FA      bool
+	Requires2FA       bool
 }
 
 // AuthService handles all authentication flows.
@@ -32,14 +32,16 @@ type AuthService struct {
 	q      *repository.Queries
 	tokens *TokenService
 	rdb    *redis.Client
+	mailer *Mailer
 }
 
-func NewAuthService(cfg *core.Config, db *pgxpool.Pool, rdb *redis.Client) *AuthService {
+func NewAuthService(cfg *core.Config, db *pgxpool.Pool, rdb *redis.Client, mailer *Mailer) *AuthService {
 	return &AuthService{
 		cfg:    cfg,
 		q:      repository.New(db),
 		tokens: NewTokenService(db),
 		rdb:    rdb,
+		mailer: mailer,
 	}
 }
 
@@ -78,9 +80,7 @@ func (s *AuthService) Register(ctx context.Context, email, password, firstName, 
 		return fmt.Errorf("create verification token: %w", err)
 	}
 
-	// TODO Phase 4: enqueue send_email job with rawToken
-	_ = rawToken
-
+	_ = s.mailer.SendWelcomeVerify(ctx, email, firstName, rawToken)
 	return nil
 }
 
@@ -108,8 +108,7 @@ func (s *AuthService) ResendVerificationEmail(ctx context.Context, email string)
 	if err != nil {
 		return fmt.Errorf("create token: %w", err)
 	}
-	// TODO Phase 4: enqueue send_email job
-	_ = rawToken
+	_ = s.mailer.SendWelcomeVerify(ctx, email, user.FirstName, rawToken)
 	return nil
 }
 
@@ -223,8 +222,7 @@ func (s *AuthService) ForgotPassword(ctx context.Context, email string) error {
 	if err != nil {
 		return fmt.Errorf("create reset token: %w", err)
 	}
-	// TODO Phase 4: enqueue send_email job
-	_ = rawToken
+	_ = s.mailer.SendPasswordReset(ctx, email, user.FirstName, rawToken)
 	return nil
 }
 
@@ -236,6 +234,12 @@ func (s *AuthService) ResetPassword(ctx context.Context, rawToken, newPassword s
 	if err != nil {
 		return fmt.Errorf("invalid or expired reset link")
 	}
+
+	user, err := s.q.GetUserByID(ctx, t.UserID)
+	if err != nil {
+		return fmt.Errorf("user not found")
+	}
+
 	hashed, err := core.HashPassword(newPassword)
 	if err != nil {
 		return err
@@ -248,7 +252,7 @@ func (s *AuthService) ResetPassword(ctx context.Context, rawToken, newPassword s
 	if err := s.tokens.ConsumeToken(ctx, core.PgToUUID(t.ID)); err != nil {
 		return err
 	}
-	// TODO Phase 4: enqueue "password changed" email
+	_ = s.mailer.SendPasswordChanged(ctx, user.Email, user.FirstName)
 	return nil
 }
 
@@ -272,7 +276,7 @@ func (s *AuthService) ChangePassword(ctx context.Context, userID uuid.UUID, curr
 	}); err != nil {
 		return fmt.Errorf("update password: %w", err)
 	}
-	// TODO Phase 4: enqueue notification
+	_ = s.mailer.SendPasswordChanged(ctx, user.Email, user.FirstName)
 	return nil
 }
 

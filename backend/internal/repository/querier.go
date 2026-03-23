@@ -29,6 +29,7 @@ type Querier interface {
 	HardDeleteUser(ctx context.Context, id pgtype.UUID) error
 	ListNotificationsForUser(ctx context.Context, arg ListNotificationsForUserParams) ([]Notification, error)
 	ListRecoveryTokensByUser(ctx context.Context, userID pgtype.UUID) ([]Token, error)
+	// $3: '' = all, 'true' = verified only, 'false' = unverified only
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error)
 	ListUsersScheduledForHardDelete(ctx context.Context) ([]User, error)
 	MarkAllNotificationsRead(ctx context.Context, userID pgtype.UUID) error

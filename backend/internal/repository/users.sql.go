@@ -48,17 +48,17 @@ func (q *Queries) CancelSoftDelete(ctx context.Context, id pgtype.UUID) (User, e
 const countUsers = `-- name: CountUsers :one
 SELECT COUNT(*) FROM users
 WHERE deleted_at IS NULL
-  AND ($1::user_role IS NULL OR role = $1)
-  AND ($2::user_status IS NULL OR status = $2)
-  AND ($3::boolean IS NULL OR is_email_verified = $3)
-  AND ($4::text IS NULL OR email ILIKE '%' || $4 || '%' OR display_name ILIKE '%' || $4 || '%')
+  AND ($1 = '' OR role::text = $1)
+  AND ($2 = '' OR status::text = $2)
+  AND ($3 = '' OR is_email_verified = ($3 = 'true'))
+  AND ($4 = '' OR email ILIKE '%' || $4 || '%' OR display_name ILIKE '%' || $4 || '%')
 `
 
 type CountUsersParams struct {
-	Column1 UserRole   `json:"column_1"`
-	Column2 UserStatus `json:"column_2"`
-	Column3 bool       `json:"column_3"`
-	Column4 string     `json:"column_4"`
+	Column1 interface{} `json:"column_1"`
+	Column2 interface{} `json:"column_2"`
+	Column3 interface{} `json:"column_3"`
+	Column4 interface{} `json:"column_4"`
 }
 
 func (q *Queries) CountUsers(ctx context.Context, arg CountUsersParams) (int64, error) {
@@ -264,23 +264,24 @@ func (q *Queries) HardDeleteUser(ctx context.Context, id pgtype.UUID) error {
 const listUsers = `-- name: ListUsers :many
 SELECT id, email, hashed_password, first_name, last_name, display_name, bio, avatar_url, role, status, is_email_verified, totp_secret, is_2fa_enabled, last_login_at, deleted_at, created_at, updated_at FROM users
 WHERE deleted_at IS NULL
-  AND ($1::user_role IS NULL OR role = $1)
-  AND ($2::user_status IS NULL OR status = $2)
-  AND ($3::boolean IS NULL OR is_email_verified = $3)
-  AND ($4::text IS NULL OR email ILIKE '%' || $4 || '%' OR display_name ILIKE '%' || $4 || '%')
+  AND ($1 = '' OR role::text = $1)
+  AND ($2 = '' OR status::text = $2)
+  AND ($3 = '' OR is_email_verified = ($3 = 'true'))
+  AND ($4 = '' OR email ILIKE '%' || $4 || '%' OR display_name ILIKE '%' || $4 || '%')
 ORDER BY created_at DESC
 LIMIT $5 OFFSET $6
 `
 
 type ListUsersParams struct {
-	Column1 UserRole   `json:"column_1"`
-	Column2 UserStatus `json:"column_2"`
-	Column3 bool       `json:"column_3"`
-	Column4 string     `json:"column_4"`
-	Limit   int32      `json:"limit"`
-	Offset  int32      `json:"offset"`
+	Column1 interface{} `json:"column_1"`
+	Column2 interface{} `json:"column_2"`
+	Column3 interface{} `json:"column_3"`
+	Column4 interface{} `json:"column_4"`
+	Limit   int32       `json:"limit"`
+	Offset  int32       `json:"offset"`
 }
 
+// $3: ” = all, 'true' = verified only, 'false' = unverified only
 func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error) {
 	rows, err := q.db.Query(ctx, listUsers,
 		arg.Column1,

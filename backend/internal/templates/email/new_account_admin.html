@@ -1,0 +1,13 @@
+<p>Hi {{.FirstName}},</p>
+<p>An administrator has created an account for you on <strong>{{.AppName}}</strong>.</p>
+<p>Here are your login details:</p>
+<table style="margin: 16px 0; border-collapse: collapse;">
+  <tr><td style="padding: 4px 12px 4px 0; color: #6b7280;">Email:</td><td style="padding: 4px 0;"><strong>{{.Email}}</strong></td></tr>
+  <tr><td style="padding: 4px 12px 4px 0; color: #6b7280;">Temporary Password:</td><td style="padding: 4px 0;"><strong>{{.TempPassword}}</strong></td></tr>
+</table>
+<p>Please log in and change your password immediately.</p>
+<p><a class="btn" href="{{.LoginURL}}">Log In Now</a></p>
+<p>For security reasons, this temporary password should be changed as soon as possible.</p>
+<hr/>
+<p>If the button above doesn't work, paste this URL into your browser:<br/>
+<a href="{{.LoginURL}}">{{.LoginURL}}</a></p>
