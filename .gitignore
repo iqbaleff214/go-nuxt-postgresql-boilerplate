@@ -1,0 +1,23 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Backend
+backend/api
+backend/worker
+backend/uploads/
+
+# Frontend
+frontend/node_modules/
+frontend/.nuxt/
+frontend/.output/
+frontend/dist/
+
+# Go
+*.test
+*.out
+
+# OS
+.DS_Store
+Thumbs.db
