@@ -7,36 +7,36 @@ package repository
 import (
 	"context"
 
-	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Querier interface {
-	CancelSoftDelete(ctx context.Context, id uuid.UUID) (User, error)
-	CountNotificationsForUser(ctx context.Context, userID uuid.UUID) (int64, error)
-	CountUnreadNotifications(ctx context.Context, userID uuid.UUID) (int64, error)
+	CancelSoftDelete(ctx context.Context, id pgtype.UUID) (User, error)
+	CountNotificationsForUser(ctx context.Context, userID pgtype.UUID) (int64, error)
+	CountUnreadNotifications(ctx context.Context, userID pgtype.UUID) (int64, error)
 	CountUsers(ctx context.Context, arg CountUsersParams) (int64, error)
 	CreateNotification(ctx context.Context, arg CreateNotificationParams) (Notification, error)
 	CreateToken(ctx context.Context, arg CreateTokenParams) (Token, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteExpiredTokens(ctx context.Context) error
 	DeleteTokensByUserAndType(ctx context.Context, arg DeleteTokensByUserAndTypeParams) error
-	Disable2FA(ctx context.Context, id uuid.UUID) (User, error)
+	Disable2FA(ctx context.Context, id pgtype.UUID) (User, error)
 	Enable2FA(ctx context.Context, arg Enable2FAParams) (User, error)
-	GetNotificationByID(ctx context.Context, id uuid.UUID) (Notification, error)
+	GetNotificationByID(ctx context.Context, id pgtype.UUID) (Notification, error)
 	GetTokenByHash(ctx context.Context, arg GetTokenByHashParams) (Token, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
-	GetUserByID(ctx context.Context, id uuid.UUID) (User, error)
-	HardDeleteUser(ctx context.Context, id uuid.UUID) error
+	GetUserByID(ctx context.Context, id pgtype.UUID) (User, error)
+	HardDeleteUser(ctx context.Context, id pgtype.UUID) error
 	ListNotificationsForUser(ctx context.Context, arg ListNotificationsForUserParams) ([]Notification, error)
-	ListRecoveryTokensByUser(ctx context.Context, userID uuid.UUID) ([]Token, error)
+	ListRecoveryTokensByUser(ctx context.Context, userID pgtype.UUID) ([]Token, error)
 	ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error)
 	ListUsersScheduledForHardDelete(ctx context.Context) ([]User, error)
-	MarkAllNotificationsRead(ctx context.Context, userID uuid.UUID) error
+	MarkAllNotificationsRead(ctx context.Context, userID pgtype.UUID) error
 	MarkNotificationRead(ctx context.Context, arg MarkNotificationReadParams) (Notification, error)
-	MarkTokenUsed(ctx context.Context, id uuid.UUID) (Token, error)
-	SetEmailVerified(ctx context.Context, id uuid.UUID) (User, error)
-	SoftDeleteUser(ctx context.Context, id uuid.UUID) (User, error)
-	UpdateLastLogin(ctx context.Context, id uuid.UUID) (User, error)
+	MarkTokenUsed(ctx context.Context, id pgtype.UUID) (Token, error)
+	SetEmailVerified(ctx context.Context, id pgtype.UUID) (User, error)
+	SoftDeleteUser(ctx context.Context, id pgtype.UUID) (User, error)
+	UpdateLastLogin(ctx context.Context, id pgtype.UUID) (User, error)
 	UpdateUserAvatarURL(ctx context.Context, arg UpdateUserAvatarURLParams) (User, error)
 	UpdateUserEmail(ctx context.Context, arg UpdateUserEmailParams) (User, error)
 	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) (User, error)

@@ -7,9 +7,8 @@ package repository
 
 import (
 	"context"
-	"time"
 
-	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createToken = `-- name: CreateToken :one
@@ -19,14 +18,14 @@ RETURNING id, user_id, token, type, expires_at, used_at, created_at
 `
 
 type CreateTokenParams struct {
-	UserID    uuid.UUID `json:"user_id"`
-	Token     string    `json:"token"`
-	Type      TokenType `json:"type"`
-	ExpiresAt time.Time `json:"expires_at"`
+	UserID    pgtype.UUID        `json:"user_id"`
+	Token     string             `json:"token"`
+	Type      TokenType          `json:"type"`
+	ExpiresAt pgtype.Timestamptz `json:"expires_at"`
 }
 
 func (q *Queries) CreateToken(ctx context.Context, arg CreateTokenParams) (Token, error) {
-	row := q.db.QueryRowContext(ctx, createToken,
+	row := q.db.QueryRow(ctx, createToken,
 		arg.UserID,
 		arg.Token,
 		arg.Type,
@@ -50,7 +49,7 @@ DELETE FROM tokens WHERE expires_at < NOW()
 `
 
 func (q *Queries) DeleteExpiredTokens(ctx context.Context) error {
-	_, err := q.db.ExecContext(ctx, deleteExpiredTokens)
+	_, err := q.db.Exec(ctx, deleteExpiredTokens)
 	return err
 }
 
@@ -59,12 +58,12 @@ DELETE FROM tokens WHERE user_id = $1 AND type = $2
 `
 
 type DeleteTokensByUserAndTypeParams struct {
-	UserID uuid.UUID `json:"user_id"`
-	Type   TokenType `json:"type"`
+	UserID pgtype.UUID `json:"user_id"`
+	Type   TokenType   `json:"type"`
 }
 
 func (q *Queries) DeleteTokensByUserAndType(ctx context.Context, arg DeleteTokensByUserAndTypeParams) error {
-	_, err := q.db.ExecContext(ctx, deleteTokensByUserAndType, arg.UserID, arg.Type)
+	_, err := q.db.Exec(ctx, deleteTokensByUserAndType, arg.UserID, arg.Type)
 	return err
 }
 
@@ -80,7 +79,7 @@ type GetTokenByHashParams struct {
 }
 
 func (q *Queries) GetTokenByHash(ctx context.Context, arg GetTokenByHashParams) (Token, error) {
-	row := q.db.QueryRowContext(ctx, getTokenByHash, arg.Token, arg.Type)
+	row := q.db.QueryRow(ctx, getTokenByHash, arg.Token, arg.Type)
 	var i Token
 	err := row.Scan(
 		&i.ID,
@@ -100,8 +99,8 @@ WHERE user_id = $1 AND type = 'totp_recovery' AND used_at IS NULL
 ORDER BY created_at ASC
 `
 
-func (q *Queries) ListRecoveryTokensByUser(ctx context.Context, userID uuid.UUID) ([]Token, error) {
-	rows, err := q.db.QueryContext(ctx, listRecoveryTokensByUser, userID)
+func (q *Queries) ListRecoveryTokensByUser(ctx context.Context, userID pgtype.UUID) ([]Token, error) {
+	rows, err := q.db.Query(ctx, listRecoveryTokensByUser, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -122,9 +121,6 @@ func (q *Queries) ListRecoveryTokensByUser(ctx context.Context, userID uuid.UUID
 		}
 		items = append(items, i)
 	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
@@ -138,8 +134,8 @@ WHERE id = $1
 RETURNING id, user_id, token, type, expires_at, used_at, created_at
 `
 
-func (q *Queries) MarkTokenUsed(ctx context.Context, id uuid.UUID) (Token, error) {
-	row := q.db.QueryRowContext(ctx, markTokenUsed, id)
+func (q *Queries) MarkTokenUsed(ctx context.Context, id pgtype.UUID) (Token, error) {
+	row := q.db.QueryRow(ctx, markTokenUsed, id)
 	var i Token
 	err := row.Scan(
 		&i.ID,

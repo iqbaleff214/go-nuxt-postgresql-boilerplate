@@ -7,9 +7,8 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 
-	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const cancelSoftDelete = `-- name: CancelSoftDelete :one
@@ -21,8 +20,8 @@ WHERE id = $1
 RETURNING id, email, hashed_password, first_name, last_name, display_name, bio, avatar_url, role, status, is_email_verified, totp_secret, is_2fa_enabled, last_login_at, deleted_at, created_at, updated_at
 `
 
-func (q *Queries) CancelSoftDelete(ctx context.Context, id uuid.UUID) (User, error) {
-	row := q.db.QueryRowContext(ctx, cancelSoftDelete, id)
+func (q *Queries) CancelSoftDelete(ctx context.Context, id pgtype.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, cancelSoftDelete, id)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -63,7 +62,7 @@ type CountUsersParams struct {
 }
 
 func (q *Queries) CountUsers(ctx context.Context, arg CountUsersParams) (int64, error) {
-	row := q.db.QueryRowContext(ctx, countUsers,
+	row := q.db.QueryRow(ctx, countUsers,
 		arg.Column1,
 		arg.Column2,
 		arg.Column3,
@@ -90,7 +89,7 @@ type CreateUserParams struct {
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, createUser,
+	row := q.db.QueryRow(ctx, createUser,
 		arg.Email,
 		arg.HashedPassword,
 		arg.FirstName,
@@ -130,8 +129,8 @@ WHERE id = $1
 RETURNING id, email, hashed_password, first_name, last_name, display_name, bio, avatar_url, role, status, is_email_verified, totp_secret, is_2fa_enabled, last_login_at, deleted_at, created_at, updated_at
 `
 
-func (q *Queries) Disable2FA(ctx context.Context, id uuid.UUID) (User, error) {
-	row := q.db.QueryRowContext(ctx, disable2FA, id)
+func (q *Queries) Disable2FA(ctx context.Context, id pgtype.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, disable2FA, id)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -165,13 +164,13 @@ RETURNING id, email, hashed_password, first_name, last_name, display_name, bio, 
 `
 
 type Enable2FAParams struct {
-	ID           uuid.UUID      `json:"id"`
-	TotpSecret   sql.NullString `json:"totp_secret"`
-	Is2faEnabled bool           `json:"is_2fa_enabled"`
+	ID           pgtype.UUID `json:"id"`
+	TotpSecret   pgtype.Text `json:"totp_secret"`
+	Is2faEnabled bool        `json:"is_2fa_enabled"`
 }
 
 func (q *Queries) Enable2FA(ctx context.Context, arg Enable2FAParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, enable2FA, arg.ID, arg.TotpSecret, arg.Is2faEnabled)
+	row := q.db.QueryRow(ctx, enable2FA, arg.ID, arg.TotpSecret, arg.Is2faEnabled)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -200,7 +199,7 @@ SELECT id, email, hashed_password, first_name, last_name, display_name, bio, ava
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByEmail, email)
+	row := q.db.QueryRow(ctx, getUserByEmail, email)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -228,8 +227,8 @@ const getUserByID = `-- name: GetUserByID :one
 SELECT id, email, hashed_password, first_name, last_name, display_name, bio, avatar_url, role, status, is_email_verified, totp_secret, is_2fa_enabled, last_login_at, deleted_at, created_at, updated_at FROM users WHERE id = $1 AND deleted_at IS NULL LIMIT 1
 `
 
-func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByID, id)
+func (q *Queries) GetUserByID(ctx context.Context, id pgtype.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByID, id)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -257,8 +256,8 @@ const hardDeleteUser = `-- name: HardDeleteUser :exec
 DELETE FROM users WHERE id = $1
 `
 
-func (q *Queries) HardDeleteUser(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, hardDeleteUser, id)
+func (q *Queries) HardDeleteUser(ctx context.Context, id pgtype.UUID) error {
+	_, err := q.db.Exec(ctx, hardDeleteUser, id)
 	return err
 }
 
@@ -283,7 +282,7 @@ type ListUsersParams struct {
 }
 
 func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error) {
-	rows, err := q.db.QueryContext(ctx, listUsers,
+	rows, err := q.db.Query(ctx, listUsers,
 		arg.Column1,
 		arg.Column2,
 		arg.Column3,
@@ -321,9 +320,6 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 		}
 		items = append(items, i)
 	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
@@ -337,7 +333,7 @@ WHERE deleted_at IS NOT NULL
 `
 
 func (q *Queries) ListUsersScheduledForHardDelete(ctx context.Context) ([]User, error) {
-	rows, err := q.db.QueryContext(ctx, listUsersScheduledForHardDelete)
+	rows, err := q.db.Query(ctx, listUsersScheduledForHardDelete)
 	if err != nil {
 		return nil, err
 	}
@@ -368,9 +364,6 @@ func (q *Queries) ListUsersScheduledForHardDelete(ctx context.Context) ([]User, 
 		}
 		items = append(items, i)
 	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
@@ -386,8 +379,8 @@ WHERE id = $1
 RETURNING id, email, hashed_password, first_name, last_name, display_name, bio, avatar_url, role, status, is_email_verified, totp_secret, is_2fa_enabled, last_login_at, deleted_at, created_at, updated_at
 `
 
-func (q *Queries) SetEmailVerified(ctx context.Context, id uuid.UUID) (User, error) {
-	row := q.db.QueryRowContext(ctx, setEmailVerified, id)
+func (q *Queries) SetEmailVerified(ctx context.Context, id pgtype.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, setEmailVerified, id)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -420,8 +413,8 @@ WHERE id = $1
 RETURNING id, email, hashed_password, first_name, last_name, display_name, bio, avatar_url, role, status, is_email_verified, totp_secret, is_2fa_enabled, last_login_at, deleted_at, created_at, updated_at
 `
 
-func (q *Queries) SoftDeleteUser(ctx context.Context, id uuid.UUID) (User, error) {
-	row := q.db.QueryRowContext(ctx, softDeleteUser, id)
+func (q *Queries) SoftDeleteUser(ctx context.Context, id pgtype.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, softDeleteUser, id)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -453,8 +446,8 @@ WHERE id = $1
 RETURNING id, email, hashed_password, first_name, last_name, display_name, bio, avatar_url, role, status, is_email_verified, totp_secret, is_2fa_enabled, last_login_at, deleted_at, created_at, updated_at
 `
 
-func (q *Queries) UpdateLastLogin(ctx context.Context, id uuid.UUID) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateLastLogin, id)
+func (q *Queries) UpdateLastLogin(ctx context.Context, id pgtype.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, updateLastLogin, id)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -487,12 +480,12 @@ RETURNING id, email, hashed_password, first_name, last_name, display_name, bio, 
 `
 
 type UpdateUserAvatarURLParams struct {
-	ID        uuid.UUID      `json:"id"`
-	AvatarUrl sql.NullString `json:"avatar_url"`
+	ID        pgtype.UUID `json:"id"`
+	AvatarUrl pgtype.Text `json:"avatar_url"`
 }
 
 func (q *Queries) UpdateUserAvatarURL(ctx context.Context, arg UpdateUserAvatarURLParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUserAvatarURL, arg.ID, arg.AvatarUrl)
+	row := q.db.QueryRow(ctx, updateUserAvatarURL, arg.ID, arg.AvatarUrl)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -525,12 +518,12 @@ RETURNING id, email, hashed_password, first_name, last_name, display_name, bio, 
 `
 
 type UpdateUserEmailParams struct {
-	ID    uuid.UUID `json:"id"`
-	Email string    `json:"email"`
+	ID    pgtype.UUID `json:"id"`
+	Email string      `json:"email"`
 }
 
 func (q *Queries) UpdateUserEmail(ctx context.Context, arg UpdateUserEmailParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUserEmail, arg.ID, arg.Email)
+	row := q.db.QueryRow(ctx, updateUserEmail, arg.ID, arg.Email)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -563,12 +556,12 @@ RETURNING id, email, hashed_password, first_name, last_name, display_name, bio, 
 `
 
 type UpdateUserPasswordParams struct {
-	ID             uuid.UUID `json:"id"`
-	HashedPassword string    `json:"hashed_password"`
+	ID             pgtype.UUID `json:"id"`
+	HashedPassword string      `json:"hashed_password"`
 }
 
 func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUserPassword, arg.ID, arg.HashedPassword)
+	row := q.db.QueryRow(ctx, updateUserPassword, arg.ID, arg.HashedPassword)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -604,15 +597,15 @@ RETURNING id, email, hashed_password, first_name, last_name, display_name, bio, 
 `
 
 type UpdateUserProfileParams struct {
-	ID          uuid.UUID      `json:"id"`
-	FirstName   string         `json:"first_name"`
-	LastName    string         `json:"last_name"`
-	DisplayName string         `json:"display_name"`
-	Bio         sql.NullString `json:"bio"`
+	ID          pgtype.UUID `json:"id"`
+	FirstName   string      `json:"first_name"`
+	LastName    string      `json:"last_name"`
+	DisplayName string      `json:"display_name"`
+	Bio         pgtype.Text `json:"bio"`
 }
 
 func (q *Queries) UpdateUserProfile(ctx context.Context, arg UpdateUserProfileParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUserProfile,
+	row := q.db.QueryRow(ctx, updateUserProfile,
 		arg.ID,
 		arg.FirstName,
 		arg.LastName,
@@ -651,12 +644,12 @@ RETURNING id, email, hashed_password, first_name, last_name, display_name, bio, 
 `
 
 type UpdateUserRoleParams struct {
-	ID   uuid.UUID `json:"id"`
-	Role UserRole  `json:"role"`
+	ID   pgtype.UUID `json:"id"`
+	Role UserRole    `json:"role"`
 }
 
 func (q *Queries) UpdateUserRole(ctx context.Context, arg UpdateUserRoleParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUserRole, arg.ID, arg.Role)
+	row := q.db.QueryRow(ctx, updateUserRole, arg.ID, arg.Role)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -689,12 +682,12 @@ RETURNING id, email, hashed_password, first_name, last_name, display_name, bio, 
 `
 
 type UpdateUserStatusParams struct {
-	ID     uuid.UUID  `json:"id"`
-	Status UserStatus `json:"status"`
+	ID     pgtype.UUID `json:"id"`
+	Status UserStatus  `json:"status"`
 }
 
 func (q *Queries) UpdateUserStatus(ctx context.Context, arg UpdateUserStatusParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUserStatus, arg.ID, arg.Status)
+	row := q.db.QueryRow(ctx, updateUserStatus, arg.ID, arg.Status)
 	var i User
 	err := row.Scan(
 		&i.ID,

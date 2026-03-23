@@ -5,12 +5,10 @@
 package repository
 
 import (
-	"database/sql"
 	"database/sql/driver"
 	"fmt"
-	"time"
 
-	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type TokenType string
@@ -146,41 +144,41 @@ func (ns NullUserStatus) Value() (driver.Value, error) {
 }
 
 type Notification struct {
-	ID        uuid.UUID      `json:"id"`
-	UserID    uuid.UUID      `json:"user_id"`
-	Type      string         `json:"type"`
-	Title     string         `json:"title"`
-	Body      sql.NullString `json:"body"`
-	ReadAt    sql.NullTime   `json:"read_at"`
-	CreatedAt time.Time      `json:"created_at"`
+	ID        pgtype.UUID        `json:"id"`
+	UserID    pgtype.UUID        `json:"user_id"`
+	Type      string             `json:"type"`
+	Title     string             `json:"title"`
+	Body      pgtype.Text        `json:"body"`
+	ReadAt    pgtype.Timestamptz `json:"read_at"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
 }
 
 type Token struct {
-	ID        uuid.UUID    `json:"id"`
-	UserID    uuid.UUID    `json:"user_id"`
-	Token     string       `json:"token"`
-	Type      TokenType    `json:"type"`
-	ExpiresAt time.Time    `json:"expires_at"`
-	UsedAt    sql.NullTime `json:"used_at"`
-	CreatedAt time.Time    `json:"created_at"`
+	ID        pgtype.UUID        `json:"id"`
+	UserID    pgtype.UUID        `json:"user_id"`
+	Token     string             `json:"token"`
+	Type      TokenType          `json:"type"`
+	ExpiresAt pgtype.Timestamptz `json:"expires_at"`
+	UsedAt    pgtype.Timestamptz `json:"used_at"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
 }
 
 type User struct {
-	ID              uuid.UUID      `json:"id"`
-	Email           string         `json:"email"`
-	HashedPassword  string         `json:"hashed_password"`
-	FirstName       string         `json:"first_name"`
-	LastName        string         `json:"last_name"`
-	DisplayName     string         `json:"display_name"`
-	Bio             sql.NullString `json:"bio"`
-	AvatarUrl       sql.NullString `json:"avatar_url"`
-	Role            UserRole       `json:"role"`
-	Status          UserStatus     `json:"status"`
-	IsEmailVerified bool           `json:"is_email_verified"`
-	TotpSecret      sql.NullString `json:"totp_secret"`
-	Is2faEnabled    bool           `json:"is_2fa_enabled"`
-	LastLoginAt     sql.NullTime   `json:"last_login_at"`
-	DeletedAt       sql.NullTime   `json:"deleted_at"`
-	CreatedAt       time.Time      `json:"created_at"`
-	UpdatedAt       time.Time      `json:"updated_at"`
+	ID              pgtype.UUID        `json:"id"`
+	Email           string             `json:"email"`
+	HashedPassword  string             `json:"hashed_password"`
+	FirstName       string             `json:"first_name"`
+	LastName        string             `json:"last_name"`
+	DisplayName     string             `json:"display_name"`
+	Bio             pgtype.Text        `json:"bio"`
+	AvatarUrl       pgtype.Text        `json:"avatar_url"`
+	Role            UserRole           `json:"role"`
+	Status          UserStatus         `json:"status"`
+	IsEmailVerified bool               `json:"is_email_verified"`
+	TotpSecret      pgtype.Text        `json:"totp_secret"`
+	Is2faEnabled    bool               `json:"is_2fa_enabled"`
+	LastLoginAt     pgtype.Timestamptz `json:"last_login_at"`
+	DeletedAt       pgtype.Timestamptz `json:"deleted_at"`
+	CreatedAt       pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt       pgtype.Timestamptz `json:"updated_at"`
 }

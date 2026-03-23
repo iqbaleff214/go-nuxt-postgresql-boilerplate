@@ -7,17 +7,16 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 
-	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const countNotificationsForUser = `-- name: CountNotificationsForUser :one
 SELECT COUNT(*) FROM notifications WHERE user_id = $1
 `
 
-func (q *Queries) CountNotificationsForUser(ctx context.Context, userID uuid.UUID) (int64, error) {
-	row := q.db.QueryRowContext(ctx, countNotificationsForUser, userID)
+func (q *Queries) CountNotificationsForUser(ctx context.Context, userID pgtype.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countNotificationsForUser, userID)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -27,8 +26,8 @@ const countUnreadNotifications = `-- name: CountUnreadNotifications :one
 SELECT COUNT(*) FROM notifications WHERE user_id = $1 AND read_at IS NULL
 `
 
-func (q *Queries) CountUnreadNotifications(ctx context.Context, userID uuid.UUID) (int64, error) {
-	row := q.db.QueryRowContext(ctx, countUnreadNotifications, userID)
+func (q *Queries) CountUnreadNotifications(ctx context.Context, userID pgtype.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countUnreadNotifications, userID)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -41,14 +40,14 @@ RETURNING id, user_id, type, title, body, read_at, created_at
 `
 
 type CreateNotificationParams struct {
-	UserID uuid.UUID      `json:"user_id"`
-	Type   string         `json:"type"`
-	Title  string         `json:"title"`
-	Body   sql.NullString `json:"body"`
+	UserID pgtype.UUID `json:"user_id"`
+	Type   string      `json:"type"`
+	Title  string      `json:"title"`
+	Body   pgtype.Text `json:"body"`
 }
 
 func (q *Queries) CreateNotification(ctx context.Context, arg CreateNotificationParams) (Notification, error) {
-	row := q.db.QueryRowContext(ctx, createNotification,
+	row := q.db.QueryRow(ctx, createNotification,
 		arg.UserID,
 		arg.Type,
 		arg.Title,
@@ -71,8 +70,8 @@ const getNotificationByID = `-- name: GetNotificationByID :one
 SELECT id, user_id, type, title, body, read_at, created_at FROM notifications WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetNotificationByID(ctx context.Context, id uuid.UUID) (Notification, error) {
-	row := q.db.QueryRowContext(ctx, getNotificationByID, id)
+func (q *Queries) GetNotificationByID(ctx context.Context, id pgtype.UUID) (Notification, error) {
+	row := q.db.QueryRow(ctx, getNotificationByID, id)
 	var i Notification
 	err := row.Scan(
 		&i.ID,
@@ -94,13 +93,13 @@ LIMIT $2 OFFSET $3
 `
 
 type ListNotificationsForUserParams struct {
-	UserID uuid.UUID `json:"user_id"`
-	Limit  int32     `json:"limit"`
-	Offset int32     `json:"offset"`
+	UserID pgtype.UUID `json:"user_id"`
+	Limit  int32       `json:"limit"`
+	Offset int32       `json:"offset"`
 }
 
 func (q *Queries) ListNotificationsForUser(ctx context.Context, arg ListNotificationsForUserParams) ([]Notification, error) {
-	rows, err := q.db.QueryContext(ctx, listNotificationsForUser, arg.UserID, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, listNotificationsForUser, arg.UserID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -121,9 +120,6 @@ func (q *Queries) ListNotificationsForUser(ctx context.Context, arg ListNotifica
 		}
 		items = append(items, i)
 	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
@@ -136,8 +132,8 @@ SET read_at = NOW()
 WHERE user_id = $1 AND read_at IS NULL
 `
 
-func (q *Queries) MarkAllNotificationsRead(ctx context.Context, userID uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, markAllNotificationsRead, userID)
+func (q *Queries) MarkAllNotificationsRead(ctx context.Context, userID pgtype.UUID) error {
+	_, err := q.db.Exec(ctx, markAllNotificationsRead, userID)
 	return err
 }
 
@@ -149,12 +145,12 @@ RETURNING id, user_id, type, title, body, read_at, created_at
 `
 
 type MarkNotificationReadParams struct {
-	ID     uuid.UUID `json:"id"`
-	UserID uuid.UUID `json:"user_id"`
+	ID     pgtype.UUID `json:"id"`
+	UserID pgtype.UUID `json:"user_id"`
 }
 
 func (q *Queries) MarkNotificationRead(ctx context.Context, arg MarkNotificationReadParams) (Notification, error) {
-	row := q.db.QueryRowContext(ctx, markNotificationRead, arg.ID, arg.UserID)
+	row := q.db.QueryRow(ctx, markNotificationRead, arg.ID, arg.UserID)
 	var i Notification
 	err := row.Scan(
 		&i.ID,
