@@ -21,8 +21,7 @@ const schema = toTypedSchema(z.object({
   path: ['confirmPassword'],
 }))
 
-const { handleSubmit, errors, setFieldError } = useForm({ validationSchema: schema })
-const { defineField } = useForm({ validationSchema: schema })
+const { handleSubmit, errors, setFieldError, defineField } = useForm({ validationSchema: schema })
 
 const [firstName, firstNameAttrs] = defineField('firstName')
 const [lastName, lastNameAttrs] = defineField('lastName')
