@@ -62,4 +62,8 @@
   .modal {
     @apply w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl;
   }
+
+  .skeleton {
+    @apply bg-gray-200 rounded-lg animate-pulse;
+  }
 }

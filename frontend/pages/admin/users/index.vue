@@ -141,14 +141,16 @@ function statusBadge(s: string) {
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-50">
-            <tr v-if="loading">
-              <td colspan="6" class="px-5 py-12 text-center">
-                <svg class="w-6 h-6 text-gray-300 animate-spin mx-auto" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-              </td>
-            </tr>
+            <template v-if="loading">
+              <tr v-for="i in 8" :key="i" class="border-b border-gray-50">
+                <td class="px-5 py-3.5"><div class="skeleton h-4 w-32" /></td>
+                <td class="px-5 py-3.5"><div class="skeleton h-4 w-40" /></td>
+                <td class="px-5 py-3.5"><div class="skeleton h-5 w-16 rounded-full" /></td>
+                <td class="px-5 py-3.5"><div class="skeleton h-5 w-14 rounded-full" /></td>
+                <td class="px-5 py-3.5"><div class="skeleton w-5 h-5 rounded-full" /></td>
+                <td class="px-5 py-3.5"><div class="skeleton h-4 w-24" /></td>
+              </tr>
+            </template>
             <tr v-else-if="users.length === 0">
               <td colspan="6" class="px-5 py-12 text-center text-gray-400 text-sm">No users found</td>
             </tr>

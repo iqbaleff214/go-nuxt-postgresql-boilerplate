@@ -76,12 +76,28 @@ async function save() {
       <span class="text-gray-700 font-semibold">Edit user</span>
     </div>
 
-    <!-- Loading -->
-    <div v-if="loading" class="card flex items-center justify-center py-16">
-      <svg class="w-6 h-6 text-gray-300 animate-spin" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-      </svg>
+    <!-- Loading skeleton -->
+    <div v-if="loading" class="card space-y-5">
+      <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+        <div class="space-y-2">
+          <div class="skeleton h-5 w-40" />
+          <div class="skeleton h-3 w-56" />
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-1.5"><div class="skeleton h-3 w-20" /><div class="skeleton h-10" /></div>
+        <div class="space-y-1.5"><div class="skeleton h-3 w-20" /><div class="skeleton h-10" /></div>
+      </div>
+      <div class="space-y-1.5"><div class="skeleton h-3 w-28" /><div class="skeleton h-10" /></div>
+      <div class="space-y-1.5"><div class="skeleton h-3 w-12" /><div class="skeleton h-20" /></div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-1.5"><div class="skeleton h-3 w-12" /><div class="skeleton h-10" /></div>
+        <div class="space-y-1.5"><div class="skeleton h-3 w-14" /><div class="skeleton h-10" /></div>
+      </div>
+      <div class="flex gap-3 pt-2 border-t border-gray-100">
+        <div class="skeleton h-10 w-28" />
+        <div class="skeleton h-10 w-20" />
+      </div>
     </div>
 
     <!-- Error -->

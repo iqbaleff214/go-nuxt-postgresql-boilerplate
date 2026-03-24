@@ -115,96 +115,131 @@ const initials = computed(() => {
       <p class="text-sm text-gray-500 mt-1">Manage your personal information and preferences</p>
     </div>
 
-    <!-- Avatar -->
-    <div class="card">
-      <div class="flex items-center gap-5">
-        <div class="relative shrink-0">
-          <div v-if="avatarPreview || authStore.user?.avatarUrl">
-            <img
-              :src="avatarPreview ?? authStore.user?.avatarUrl"
-              class="w-20 h-20 rounded-2xl object-cover"
-            />
-          </div>
-          <div v-else class="w-20 h-20 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl font-bold">
-            {{ initials }}
-          </div>
-        </div>
-        <div class="flex-1 min-w-0">
-          <p class="font-semibold text-gray-900">
-            {{ authStore.user?.displayName || `${authStore.user?.firstName} ${authStore.user?.lastName}` }}
-          </p>
-          <p class="text-sm text-gray-500 mt-0.5 truncate">{{ authStore.user?.email }}</p>
-          <div class="flex items-center gap-3 mt-3">
-            <button class="btn-secondary text-sm py-1.5 px-3" @click="pickAvatar">Change photo</button>
-            <span class="text-xs text-gray-400">JPEG, PNG, WebP · max 2 MB</span>
-          </div>
-          <p v-if="avatarError" class="text-xs text-rose-600 mt-1.5">{{ avatarError }}</p>
-          <input ref="avatarInput" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" @change="onAvatarChange" />
+    <!-- Skeleton -->
+    <template v-if="!authStore.user">
+      <!-- Avatar skeleton -->
+      <div class="card flex items-center gap-5">
+        <div class="skeleton w-20 h-20 rounded-2xl shrink-0" />
+        <div class="space-y-2 flex-1">
+          <div class="skeleton h-4 w-36" />
+          <div class="skeleton h-3 w-48" />
+          <div class="skeleton h-8 w-28 mt-1" />
         </div>
       </div>
-    </div>
-
-    <!-- Profile info -->
-    <div class="card">
-      <h2 class="text-base font-semibold text-gray-900 mb-5">Personal information</h2>
-      <form class="space-y-4" @submit.prevent="saveProfile">
-        <div v-if="profileError" class="flex items-center gap-2.5 rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-sm text-rose-700">
-          <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          {{ profileError }}
-        </div>
-        <div v-if="profileSuccess" class="flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 p-3.5 text-sm text-emerald-700">
-          <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          Profile updated successfully.
-        </div>
-
+      <!-- Form skeleton -->
+      <div class="card space-y-5">
+        <div class="skeleton h-5 w-40" />
         <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="label">First name</label>
-            <input v-model="profileForm.firstName" type="text" class="input" />
-          </div>
-          <div>
-            <label class="label">Last name</label>
-            <input v-model="profileForm.lastName" type="text" class="input" />
-          </div>
+          <div class="space-y-1.5"><div class="skeleton h-3 w-20" /><div class="skeleton h-10" /></div>
+          <div class="space-y-1.5"><div class="skeleton h-3 w-20" /><div class="skeleton h-10" /></div>
         </div>
-        <div>
-          <label class="label">Display name</label>
-          <input v-model="profileForm.displayName" type="text" class="input" placeholder="How you'll appear to others" />
-        </div>
-        <div>
-          <label class="label">Bio</label>
-          <textarea v-model="profileForm.bio" class="input resize-none" rows="3" maxlength="500" placeholder="Tell us a bit about yourself…" />
-        </div>
-        <div class="flex items-center justify-between pt-1">
-          <button type="submit" class="btn-primary">Save changes</button>
-          <NuxtLink to="/profile/security" class="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors">
-            Security settings →
-          </NuxtLink>
-        </div>
-      </form>
-    </div>
-
-    <!-- Email -->
-    <div class="card">
-      <div class="flex items-center justify-between">
-        <div>
-          <h2 class="text-base font-semibold text-gray-900">Email address</h2>
-          <p class="text-sm text-gray-500 mt-0.5">{{ authStore.user?.email }}</p>
-        </div>
-        <button class="btn-secondary text-sm" @click="showEmailModal = true">Change</button>
+        <div class="space-y-1.5"><div class="skeleton h-3 w-28" /><div class="skeleton h-10" /></div>
+        <div class="space-y-1.5"><div class="skeleton h-3 w-12" /><div class="skeleton h-24" /></div>
+        <div class="skeleton h-10 w-28" />
       </div>
-    </div>
+      <!-- Email skeleton -->
+      <div class="card flex items-center justify-between">
+        <div class="space-y-1.5">
+          <div class="skeleton h-4 w-32" />
+          <div class="skeleton h-3 w-44" />
+        </div>
+        <div class="skeleton h-9 w-20" />
+      </div>
+    </template>
 
-    <!-- Danger zone -->
-    <div class="rounded-2xl border border-rose-200 bg-white p-6">
-      <h2 class="text-base font-semibold text-rose-600 mb-1">Danger zone</h2>
-      <p class="text-sm text-gray-500 mb-4">Permanently delete your account and all associated data. This cannot be undone.</p>
-      <button class="btn-danger text-sm" @click="showDeleteModal = true">Delete account</button>
-    </div>
+    <!-- Real content -->
+    <template v-else>
+      <!-- Avatar -->
+      <div class="card">
+        <div class="flex items-center gap-5">
+          <div class="relative shrink-0">
+            <div v-if="avatarPreview || authStore.user.avatarUrl">
+              <img
+                :src="avatarPreview ?? authStore.user.avatarUrl"
+                class="w-20 h-20 rounded-2xl object-cover"
+              />
+            </div>
+            <div v-else class="w-20 h-20 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl font-bold">
+              {{ initials }}
+            </div>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-gray-900">
+              {{ authStore.user.displayName || `${authStore.user.firstName} ${authStore.user.lastName}` }}
+            </p>
+            <p class="text-sm text-gray-500 mt-0.5 truncate">{{ authStore.user.email }}</p>
+            <div class="flex items-center gap-3 mt-3">
+              <button class="btn-secondary text-sm py-1.5 px-3" @click="pickAvatar">Change photo</button>
+              <span class="text-xs text-gray-400">JPEG, PNG, WebP · max 2 MB</span>
+            </div>
+            <p v-if="avatarError" class="text-xs text-rose-600 mt-1.5">{{ avatarError }}</p>
+            <input ref="avatarInput" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" @change="onAvatarChange" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile info -->
+      <div class="card">
+        <h2 class="text-base font-semibold text-gray-900 mb-5">Personal information</h2>
+        <form class="space-y-4" @submit.prevent="saveProfile">
+          <div v-if="profileError" class="flex items-center gap-2.5 rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-sm text-rose-700">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {{ profileError }}
+          </div>
+          <div v-if="profileSuccess" class="flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 p-3.5 text-sm text-emerald-700">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Profile updated successfully.
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="label">First name</label>
+              <input v-model="profileForm.firstName" type="text" class="input" />
+            </div>
+            <div>
+              <label class="label">Last name</label>
+              <input v-model="profileForm.lastName" type="text" class="input" />
+            </div>
+          </div>
+          <div>
+            <label class="label">Display name</label>
+            <input v-model="profileForm.displayName" type="text" class="input" placeholder="How you'll appear to others" />
+          </div>
+          <div>
+            <label class="label">Bio</label>
+            <textarea v-model="profileForm.bio" class="input resize-none" rows="3" maxlength="500" placeholder="Tell us a bit about yourself…" />
+          </div>
+          <div class="flex items-center justify-between pt-1">
+            <button type="submit" class="btn-primary">Save changes</button>
+            <NuxtLink to="/profile/security" class="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors">
+              Security settings →
+            </NuxtLink>
+          </div>
+        </form>
+      </div>
+
+      <!-- Email -->
+      <div class="card">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-base font-semibold text-gray-900">Email address</h2>
+            <p class="text-sm text-gray-500 mt-0.5">{{ authStore.user.email }}</p>
+          </div>
+          <button class="btn-secondary text-sm" @click="showEmailModal = true">Change</button>
+        </div>
+      </div>
+
+      <!-- Danger zone -->
+      <div class="rounded-2xl border border-rose-200 bg-white p-6">
+        <h2 class="text-base font-semibold text-rose-600 mb-1">Danger zone</h2>
+        <p class="text-sm text-gray-500 mb-4">Permanently delete your account and all associated data. This cannot be undone.</p>
+        <button class="btn-danger text-sm" @click="showDeleteModal = true">Delete account</button>
+      </div>
+    </template>
 
     <!-- Email change modal -->
     <div v-if="showEmailModal" class="modal-backdrop">

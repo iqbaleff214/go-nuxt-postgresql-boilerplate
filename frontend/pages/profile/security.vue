@@ -120,17 +120,32 @@ function copyRecoveryCodes() {
 
     <!-- 2FA -->
     <div class="card">
+      <!-- Skeleton while user loads -->
+      <template v-if="!authStore.user">
+        <div class="flex items-start justify-between mb-1">
+          <div class="space-y-2">
+            <div class="skeleton h-5 w-48" />
+            <div class="skeleton h-4 w-64" />
+          </div>
+          <div class="skeleton h-6 w-16 rounded-full" />
+        </div>
+        <div class="mt-5">
+          <div class="skeleton h-10 w-28" />
+        </div>
+      </template>
+
+      <template v-else>
       <div class="flex items-start justify-between mb-1">
         <div>
           <h2 class="text-base font-semibold text-gray-900">Two-factor authentication</h2>
           <p class="text-sm text-gray-500 mt-0.5">Add an extra layer of security to your account</p>
         </div>
-        <span :class="authStore.user?.is2faEnabled ? 'badge-success' : 'badge-neutral'">
-          {{ authStore.user?.is2faEnabled ? 'Enabled' : 'Disabled' }}
+        <span :class="authStore.user.is2faEnabled ? 'badge-success' : 'badge-neutral'">
+          {{ authStore.user.is2faEnabled ? 'Enabled' : 'Disabled' }}
         </span>
       </div>
 
-      <div v-if="!authStore.user?.is2faEnabled" class="mt-5">
+      <div v-if="!authStore.user.is2faEnabled" class="mt-5">
         <NuxtLink to="/profile/security/2fa" class="btn-primary">Enable 2FA</NuxtLink>
       </div>
 
@@ -149,6 +164,7 @@ function copyRecoveryCodes() {
           <button class="btn-danger text-sm" @click="showDisableModal = true">Disable 2FA</button>
         </div>
       </div>
+      </template>
     </div>
 
     <!-- Disable 2FA modal -->

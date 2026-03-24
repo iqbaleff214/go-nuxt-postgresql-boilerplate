@@ -2,8 +2,12 @@
 definePageMeta({ layout: 'default', middleware: 'auth' })
 
 const notifStore = useNotificationsStore()
+const loading = ref(true)
 
-onMounted(() => notifStore.fetchNotifications(1))
+onMounted(async () => {
+  await notifStore.fetchNotifications(1)
+  loading.value = false
+})
 
 async function markRead(id: string) {
   await notifStore.markRead(id)
@@ -34,8 +38,22 @@ function formatDate(iso: string) {
       </button>
     </div>
 
+    <!-- Skeleton -->
+    <div v-if="loading" class="space-y-2">
+      <div v-for="i in 5" :key="i" class="bg-white rounded-2xl border border-gray-100 flex overflow-hidden">
+        <div class="w-1 skeleton rounded-none shrink-0" />
+        <div class="flex-1 px-5 py-4 space-y-2">
+          <div class="flex justify-between gap-4">
+            <div class="skeleton h-4 w-48" />
+            <div class="skeleton h-3 w-24" />
+          </div>
+          <div class="skeleton h-3 w-72" />
+        </div>
+      </div>
+    </div>
+
     <!-- Empty state -->
-    <div v-if="notifStore.notifications.length === 0" class="card text-center py-16">
+    <div v-else-if="notifStore.notifications.length === 0" class="card text-center py-16">
       <div class="mx-auto w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center mb-4">
         <svg class="w-7 h-7 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />

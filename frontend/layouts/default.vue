@@ -118,8 +118,17 @@ const initials = computed(() => {
 
       <!-- User footer -->
       <div class="px-3 py-4 border-t border-gray-100">
-        <div class="flex items-center gap-3 px-2">
-          <div v-if="authStore.user?.avatarUrl" class="shrink-0">
+        <!-- Skeleton while user loads -->
+        <div v-if="!authStore.user" class="flex items-center gap-3 px-2">
+          <div class="skeleton w-8 h-8 rounded-full shrink-0" />
+          <div class="flex-1 min-w-0 space-y-1.5">
+            <div class="skeleton h-3 w-24" />
+            <div class="skeleton h-2.5 w-14" />
+          </div>
+        </div>
+        <!-- Loaded -->
+        <div v-else class="flex items-center gap-3 px-2">
+          <div v-if="authStore.user.avatarUrl" class="shrink-0">
             <img :src="authStore.user.avatarUrl" class="w-8 h-8 rounded-full object-cover" />
           </div>
           <div v-else class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold shrink-0">
@@ -127,9 +136,9 @@ const initials = computed(() => {
           </div>
           <div class="flex-1 min-w-0">
             <p class="text-xs font-semibold text-gray-900 truncate">
-              {{ authStore.user?.displayName || authStore.user?.firstName || authStore.user?.email }}
+              {{ authStore.user.displayName || authStore.user.firstName || authStore.user.email }}
             </p>
-            <p class="text-[11px] text-gray-400 truncate capitalize">{{ authStore.user?.role }}</p>
+            <p class="text-[11px] text-gray-400 truncate capitalize">{{ authStore.user.role }}</p>
           </div>
           <button
             class="p-1.5 rounded-lg text-gray-400 hover:text-rose-500 hover:bg-rose-50 transition-colors shrink-0"
