@@ -15,6 +15,8 @@ import (
 	"github.com/hibiken/asynq"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/redis/go-redis/v9"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func SetupRouter(cfg *core.Config, db *pgxpool.Pool, rdb *redis.Client) *gin.Engine {
@@ -41,10 +43,13 @@ func SetupRouter(cfg *core.Config, db *pgxpool.Pool, rdb *redis.Client) *gin.Eng
 	// Static file serving (local storage)
 	r.Static("/files", cfg.StoragePath)
 
-	// Health check
-	r.GET("/health", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"status": "ok"})
-	})
+	// Health check — pings DB and Redis, returns 503 if either is down
+	r.GET("/health", handler.HealthHandler(db, rdb))
+
+	// Swagger UI (dev only)
+	if cfg.AppEnv != "production" {
+		r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	}
 
 	// ── Services ──────────────────────────────────────────────────────────────
 	storage, err := service.NewStorageService(
@@ -84,6 +89,7 @@ func SetupRouter(cfg *core.Config, db *pgxpool.Pool, rdb *redis.Client) *gin.Eng
 	profileH := handler.NewProfileHandler(userSvc)
 	adminH := handler.NewAdminHandler(userSvc)
 	notifH := handler.NewNotificationHandler(notifSvc)
+	announcementH := handler.NewAnnouncementHandler(asynqClient)
 
 	// ── Middleware helpers ─────────────────────────────────────────────────────
 	authMW := middleware.RequireAuth(cfg)
@@ -156,6 +162,7 @@ func SetupRouter(cfg *core.Config, db *pgxpool.Pool, rdb *redis.Client) *gin.Eng
 				users.POST("/:id/ban", adminH.BanUser)
 				users.POST("/:id/unban", adminH.UnbanUser)
 			}
+			admin.POST("/announcements", announcementH.Broadcast)
 		}
 	}
 

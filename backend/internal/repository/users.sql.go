@@ -261,6 +261,49 @@ func (q *Queries) HardDeleteUser(ctx context.Context, id pgtype.UUID) error {
 	return err
 }
 
+const listActiveUsers = `-- name: ListActiveUsers :many
+SELECT id, email, hashed_password, first_name, last_name, display_name, bio, avatar_url, role, status, is_email_verified, totp_secret, is_2fa_enabled, last_login_at, deleted_at, created_at, updated_at FROM users
+WHERE status = 'active' AND deleted_at IS NULL
+`
+
+func (q *Queries) ListActiveUsers(ctx context.Context) ([]User, error) {
+	rows, err := q.db.Query(ctx, listActiveUsers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []User{}
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.Email,
+			&i.HashedPassword,
+			&i.FirstName,
+			&i.LastName,
+			&i.DisplayName,
+			&i.Bio,
+			&i.AvatarUrl,
+			&i.Role,
+			&i.Status,
+			&i.IsEmailVerified,
+			&i.TotpSecret,
+			&i.Is2faEnabled,
+			&i.LastLoginAt,
+			&i.DeletedAt,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listUsers = `-- name: ListUsers :many
 SELECT id, email, hashed_password, first_name, last_name, display_name, bio, avatar_url, role, status, is_email_verified, totp_secret, is_2fa_enabled, last_login_at, deleted_at, created_at, updated_at FROM users
 WHERE deleted_at IS NULL

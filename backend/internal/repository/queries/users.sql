@@ -123,6 +123,10 @@ WHERE deleted_at IS NULL
   AND ($3 = '' OR is_email_verified = ($3 = 'true'))
   AND ($4 = '' OR email ILIKE '%' || $4 || '%' OR display_name ILIKE '%' || $4 || '%');
 
+-- name: ListActiveUsers :many
+SELECT * FROM users
+WHERE status = 'active' AND deleted_at IS NULL;
+
 -- name: ListUsersScheduledForHardDelete :many
 SELECT * FROM users
 WHERE deleted_at IS NOT NULL

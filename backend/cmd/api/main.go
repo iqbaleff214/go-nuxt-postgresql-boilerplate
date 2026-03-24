@@ -1,9 +1,29 @@
+// @title           Go-Nuxt Starter Kit API
+// @version         1.0
+// @description     REST API for the Go-Nuxt Starter Kit (auth, profile, notifications, admin).
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   API Support
+// @contact.url    http://github.com/404nfidv2/go-nuxt-starter-kit
+
+// @license.name  MIT
+// @license.url   https://opensource.org/licenses/MIT
+
+// @host      localhost:8080
+// @BasePath  /api/v1
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and the access token.
+
 package main
 
 import (
 	"context"
 	"log"
 
+	_ "github.com/404nfidv2/go-nuxt-starter-kit/backend/docs"
 	"github.com/404nfidv2/go-nuxt-starter-kit/backend/internal/api"
 	"github.com/404nfidv2/go-nuxt-starter-kit/backend/internal/core"
 )

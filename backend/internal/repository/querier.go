@@ -27,6 +27,7 @@ type Querier interface {
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	GetUserByID(ctx context.Context, id pgtype.UUID) (User, error)
 	HardDeleteUser(ctx context.Context, id pgtype.UUID) error
+	ListActiveUsers(ctx context.Context) ([]User, error)
 	ListNotificationsForUser(ctx context.Context, arg ListNotificationsForUserParams) ([]Notification, error)
 	ListRecoveryTokensByUser(ctx context.Context, userID pgtype.UUID) ([]Token, error)
 	// $3: '' = all, 'true' = verified only, 'false' = unverified only

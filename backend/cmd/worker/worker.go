@@ -29,6 +29,7 @@ func startWorker(cfg *core.Config, db *pgxpool.Pool, rdb *redis.Client) {
 	mux := asynq.NewServeMux()
 	mux.Handle(jobs.TypeSendEmail, jobs.NewEmailJobHandler(emailSender))
 	mux.Handle(jobs.TypeSendNotification, jobs.NewNotificationJobHandler(hub))
+	mux.Handle(jobs.TypeBroadcastAnnouncement, jobs.NewBroadcastAnnouncementHandler(db, hub))
 	mux.Handle(jobs.TypeCleanupExpiredTokens, jobs.NewCleanupExpiredTokensHandler(db))
 	mux.Handle(jobs.TypeHardDeleteAccounts, jobs.NewHardDeleteAccountsHandler(db))
 
