@@ -5,7 +5,6 @@ networks:
     driver: bridge
 
 volumes:
-  pg_data:
   redis_data:
   minio_data:
 
@@ -79,11 +78,10 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: appdb
-      PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - "5432:5432"
-    volumes:
-      - pg_data:/var/lib/postgresql/data
+    tmpfs:
+      - /var/lib/postgresql/data
     networks:
       - app-network
     healthcheck:
