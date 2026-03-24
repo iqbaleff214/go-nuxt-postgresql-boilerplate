@@ -1,23 +1,58 @@
-# Environment
+# ─── Environment ─────────────────────────────────────────────────────────────
 .env
 .env.local
 .env.*.local
 
-# Backend
+# ─── Backend ──────────────────────────────────────────────────────────────────
+# Compiled binaries
 backend/api
 backend/worker
+
+# Local file uploads (when STORAGE_BACKEND=local)
 backend/uploads/
 
-# Frontend
+# Go test & coverage artifacts
+*.test
+*.out
+coverage.html
+coverage.out
+
+# ─── Frontend ─────────────────────────────────────────────────────────────────
+# Dependencies
 frontend/node_modules/
+node_modules/
+
+# Nuxt build output
 frontend/.nuxt/
 frontend/.output/
 frontend/dist/
 
-# Go
-*.test
-*.out
+# Nuxt dev cache
+frontend/.cache/
 
-# OS
+# pnpm
+.pnpm-store/
+frontend/.pnpm-store/
+
+# Vite cache
+frontend/.vite/
+
+# ─── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── Docker ───────────────────────────────────────────────────────────────────
+# Local compose overrides
+docker-compose.override.yml
+
+# ─── Editors & OS ─────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
