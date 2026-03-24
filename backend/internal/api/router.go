@@ -10,6 +10,7 @@ import (
 	"github.com/404nfidv2/go-nuxt-starter-kit/backend/internal/core"
 	"github.com/404nfidv2/go-nuxt-starter-kit/backend/internal/service"
 	"github.com/404nfidv2/go-nuxt-starter-kit/backend/internal/templates"
+	"github.com/404nfidv2/go-nuxt-starter-kit/backend/internal/ws"
 	"github.com/gin-gonic/gin"
 	"github.com/hibiken/asynq"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -68,15 +69,21 @@ func SetupRouter(cfg *core.Config, db *pgxpool.Pool, rdb *redis.Client) *gin.Eng
 	asynqClient := asynq.NewClient(redisOpt)
 	mailer := service.NewMailer(renderer, asynqClient, cfg.AppName, cfg.FrontendURL)
 
+	// WebSocket hub — runs in background for the lifetime of the server
+	hub := ws.NewHub(rdb)
+	go hub.Run(context.Background())
+
 	authSvc := service.NewAuthService(cfg, db, rdb, mailer)
 	twofaSvc := service.NewTwoFAService(cfg, db, rdb, authSvc)
 	userSvc := service.NewUserService(cfg, db, storage, mailer)
+	notifSvc := service.NewNotificationService(db, asynqClient)
 
 	// ── Handlers ──────────────────────────────────────────────────────────────
 	authH := handler.NewAuthHandler(authSvc, cfg)
 	twofaH := handler.NewTwoFAHandler(twofaSvc, cfg)
 	profileH := handler.NewProfileHandler(userSvc)
 	adminH := handler.NewAdminHandler(userSvc)
+	notifH := handler.NewNotificationHandler(notifSvc)
 
 	// ── Middleware helpers ─────────────────────────────────────────────────────
 	authMW := middleware.RequireAuth(cfg)
@@ -84,6 +91,11 @@ func SetupRouter(cfg *core.Config, db *pgxpool.Pool, rdb *redis.Client) *gin.Eng
 	rl := func(prefix string, limit int) gin.HandlerFunc {
 		return middleware.RateLimit(prefix, limit, time.Minute, rdb)
 	}
+
+	// ── WebSocket ──────────────────────────────────────────────────────────────
+	r.GET("/ws/notifications", func(c *gin.Context) {
+		ws.ServeWS(hub, cfg, c.Writer, c.Request)
+	})
 
 	v1 := r.Group("/api/v1")
 	{
@@ -118,6 +130,15 @@ func SetupRouter(cfg *core.Config, db *pgxpool.Pool, rdb *redis.Client) *gin.Eng
 			profile.POST("/email/confirm", profileH.ConfirmEmailChange)
 			profile.POST("/delete", profileH.RequestDeletion)
 			profile.POST("/delete/cancel", profileH.CancelDeletion)
+		}
+
+		// ── Notifications (requires auth) ──────────────────────────────────
+		notif := v1.Group("/notifications", authMW)
+		{
+			notif.GET("", notifH.List)
+			notif.GET("/unread-count", notifH.UnreadCount)
+			notif.PATCH("/read-all", notifH.MarkAllRead)
+			notif.PATCH("/:id/read", notifH.MarkRead)
 		}
 
 		// ── Admin (requires superadmin) ────────────────────────────────────
