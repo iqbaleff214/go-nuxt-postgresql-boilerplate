@@ -30,7 +30,10 @@ type smtpSender struct {
 }
 
 func (s *smtpSender) Send(_ context.Context, to, subject, htmlBody string) error {
-	auth := smtp.PlainAuth("", s.user, s.pass, s.host)
+	var auth smtp.Auth
+	if s.user != "" {
+		auth = smtp.PlainAuth("", s.user, s.pass, s.host)
+	}
 	from := fmt.Sprintf("%s <%s>", s.fromName, s.fromAddr)
 	msg := strings.Join([]string{
 		"MIME-Version: 1.0",
