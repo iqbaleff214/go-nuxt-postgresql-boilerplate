@@ -15,25 +15,39 @@ async function submit() {
 
 <template>
   <div>
-    <h1 class="text-2xl font-bold mb-2">Forgot password</h1>
-
-    <div v-if="submitted" class="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
-      If an account with that email exists, you'll receive a reset link shortly.
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold text-gray-900">Forgot your password?</h1>
+      <p class="mt-1.5 text-sm text-gray-500">No worries, we'll send you reset instructions.</p>
     </div>
 
-    <form v-else class="space-y-4" @submit.prevent="submit">
-      <p class="text-gray-500 text-sm">Enter your email and we'll send you a reset link.</p>
-
-      <div>
-        <label class="block text-sm font-medium mb-1">Email</label>
-        <input v-model="email" type="email" class="input" placeholder="jane@example.com" required />
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+      <div v-if="submitted" class="text-center py-4 space-y-4">
+        <div class="mx-auto w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center">
+          <svg class="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <div>
+          <p class="font-semibold text-gray-900">Check your email</p>
+          <p class="text-sm text-gray-500 mt-1">If an account with that email exists, you'll receive a reset link shortly.</p>
+        </div>
+        <NuxtLink to="/login" class="btn-secondary inline-flex mx-auto">Back to sign in</NuxtLink>
       </div>
 
-      <button type="submit" class="btn-primary w-full">Send reset link</button>
+      <form v-else class="space-y-5" @submit.prevent="submit">
+        <div>
+          <label class="label">Email address</label>
+          <input v-model="email" type="email" class="input" placeholder="you@example.com" required autofocus />
+        </div>
 
-      <p class="text-center text-sm">
-        <NuxtLink to="/login" class="text-gray-500 hover:underline">Back to login</NuxtLink>
-      </p>
-    </form>
+        <button type="submit" class="btn-primary w-full">Send reset link</button>
+
+        <div class="text-center">
+          <NuxtLink to="/login" class="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors">
+            ← Back to sign in
+          </NuxtLink>
+        </div>
+      </form>
+    </div>
   </div>
 </template>

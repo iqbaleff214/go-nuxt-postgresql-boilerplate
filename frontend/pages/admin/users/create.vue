@@ -34,31 +34,45 @@ async function submit() {
 
 <template>
   <div class="max-w-lg">
-    <div class="flex items-center gap-3 mb-6">
-      <NuxtLink to="/admin/users" class="text-gray-500 hover:underline text-sm">← Users</NuxtLink>
-      <h1 class="text-2xl font-bold">New user</h1>
+    <!-- Breadcrumb -->
+    <div class="flex items-center gap-2 text-sm mb-6">
+      <NuxtLink to="/admin/users" class="text-gray-400 hover:text-gray-600 transition-colors font-medium">Users</NuxtLink>
+      <svg class="w-3.5 h-3.5 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+      <span class="text-gray-700 font-semibold">New user</span>
     </div>
 
-    <form class="card space-y-4" @submit.prevent="submit">
-      <div v-if="error" class="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">{{ error }}</div>
+    <form class="card space-y-5" @submit.prevent="submit">
+      <div class="pb-4 border-b border-gray-100">
+        <h1 class="text-lg font-bold text-gray-900">Create user</h1>
+        <p class="text-sm text-gray-500 mt-0.5">A temporary password will be emailed to the new user.</p>
+      </div>
+
+      <div v-if="error" class="flex items-center gap-2.5 rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-sm text-rose-700">
+        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        {{ error }}
+      </div>
 
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label class="label">First name</label>
-          <input v-model="form.firstName" type="text" class="input" required />
-          <p v-if="fieldErrors.first_name" class="text-red-500 text-xs mt-1">{{ fieldErrors.first_name }}</p>
+          <input v-model="form.firstName" type="text" class="input" required autofocus />
+          <p v-if="fieldErrors.first_name" class="mt-1.5 text-xs text-rose-600">{{ fieldErrors.first_name }}</p>
         </div>
         <div>
           <label class="label">Last name</label>
           <input v-model="form.lastName" type="text" class="input" required />
-          <p v-if="fieldErrors.last_name" class="text-red-500 text-xs mt-1">{{ fieldErrors.last_name }}</p>
+          <p v-if="fieldErrors.last_name" class="mt-1.5 text-xs text-rose-600">{{ fieldErrors.last_name }}</p>
         </div>
       </div>
 
       <div>
-        <label class="label">Email</label>
+        <label class="label">Email address</label>
         <input v-model="form.email" type="email" class="input" required />
-        <p v-if="fieldErrors.email" class="text-red-500 text-xs mt-1">{{ fieldErrors.email }}</p>
+        <p v-if="fieldErrors.email" class="mt-1.5 text-xs text-rose-600">{{ fieldErrors.email }}</p>
       </div>
 
       <div>
@@ -69,11 +83,7 @@ async function submit() {
         </select>
       </div>
 
-      <p class="text-xs text-gray-400">
-        A temporary password will be generated and emailed to the user. They must change it on first login.
-      </p>
-
-      <div class="flex gap-2 pt-2">
+      <div class="flex gap-3 pt-2 border-t border-gray-100">
         <button type="submit" class="btn-primary">Create user</button>
         <NuxtLink to="/admin/users" class="btn-secondary">Cancel</NuxtLink>
       </div>

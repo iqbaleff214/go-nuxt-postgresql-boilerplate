@@ -100,35 +100,67 @@ async function requestDeletion() {
     alert((err as ApiError).message ?? 'Failed to request deletion')
   }
 }
+
+const initials = computed(() => {
+  const u = authStore.user
+  if (!u) return '?'
+  return ((u.firstName?.[0] ?? '') + (u.lastName?.[0] ?? '')).toUpperCase() || u.email[0].toUpperCase()
+})
 </script>
 
 <template>
-  <div class="max-w-2xl space-y-8">
-    <h1 class="text-2xl font-bold">Profile</h1>
+  <div class="max-w-2xl space-y-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Profile</h1>
+      <p class="text-sm text-gray-500 mt-1">Manage your personal information and preferences</p>
+    </div>
 
     <!-- Avatar -->
-    <section class="card">
-      <h2 class="text-lg font-semibold mb-4">Avatar</h2>
-      <div class="flex items-center gap-4">
-        <img
-          :src="avatarPreview ?? authStore.user?.avatarUrl ?? '/default-avatar.png'"
-          class="w-20 h-20 rounded-full object-cover bg-gray-100"
-        />
-        <div>
-          <button class="btn-secondary" @click="pickAvatar">Change photo</button>
-          <p class="text-xs text-gray-400 mt-1">JPEG, PNG, WebP — max 2 MB</p>
-          <p v-if="avatarError" class="text-red-500 text-xs mt-1">{{ avatarError }}</p>
+    <div class="card">
+      <div class="flex items-center gap-5">
+        <div class="relative shrink-0">
+          <div v-if="avatarPreview || authStore.user?.avatarUrl">
+            <img
+              :src="avatarPreview ?? authStore.user?.avatarUrl"
+              class="w-20 h-20 rounded-2xl object-cover"
+            />
+          </div>
+          <div v-else class="w-20 h-20 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl font-bold">
+            {{ initials }}
+          </div>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="font-semibold text-gray-900">
+            {{ authStore.user?.displayName || `${authStore.user?.firstName} ${authStore.user?.lastName}` }}
+          </p>
+          <p class="text-sm text-gray-500 mt-0.5 truncate">{{ authStore.user?.email }}</p>
+          <div class="flex items-center gap-3 mt-3">
+            <button class="btn-secondary text-sm py-1.5 px-3" @click="pickAvatar">Change photo</button>
+            <span class="text-xs text-gray-400">JPEG, PNG, WebP · max 2 MB</span>
+          </div>
+          <p v-if="avatarError" class="text-xs text-rose-600 mt-1.5">{{ avatarError }}</p>
           <input ref="avatarInput" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" @change="onAvatarChange" />
         </div>
       </div>
-    </section>
+    </div>
 
     <!-- Profile info -->
-    <section class="card">
-      <h2 class="text-lg font-semibold mb-4">Profile info</h2>
+    <div class="card">
+      <h2 class="text-base font-semibold text-gray-900 mb-5">Personal information</h2>
       <form class="space-y-4" @submit.prevent="saveProfile">
-        <div v-if="profileError" class="text-red-600 text-sm">{{ profileError }}</div>
-        <div v-if="profileSuccess" class="text-green-600 text-sm">Profile updated.</div>
+        <div v-if="profileError" class="flex items-center gap-2.5 rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-sm text-rose-700">
+          <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {{ profileError }}
+        </div>
+        <div v-if="profileSuccess" class="flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 p-3.5 text-sm text-emerald-700">
+          <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Profile updated successfully.
+        </div>
+
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="label">First name</label>
@@ -141,56 +173,78 @@ async function requestDeletion() {
         </div>
         <div>
           <label class="label">Display name</label>
-          <input v-model="profileForm.displayName" type="text" class="input" />
+          <input v-model="profileForm.displayName" type="text" class="input" placeholder="How you'll appear to others" />
         </div>
         <div>
           <label class="label">Bio</label>
-          <textarea v-model="profileForm.bio" class="input" rows="3" maxlength="500" />
+          <textarea v-model="profileForm.bio" class="input resize-none" rows="3" maxlength="500" placeholder="Tell us a bit about yourself…" />
         </div>
-        <button type="submit" class="btn-primary">Save changes</button>
+        <div class="flex items-center justify-between pt-1">
+          <button type="submit" class="btn-primary">Save changes</button>
+          <NuxtLink to="/profile/security" class="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors">
+            Security settings →
+          </NuxtLink>
+        </div>
       </form>
-    </section>
+    </div>
 
     <!-- Email -->
-    <section class="card">
-      <h2 class="text-lg font-semibold mb-1">Email address</h2>
-      <p class="text-gray-500 text-sm mb-4">{{ authStore.user?.email }}</p>
-      <button class="btn-secondary" @click="showEmailModal = true">Change email</button>
-    </section>
+    <div class="card">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-semibold text-gray-900">Email address</h2>
+          <p class="text-sm text-gray-500 mt-0.5">{{ authStore.user?.email }}</p>
+        </div>
+        <button class="btn-secondary text-sm" @click="showEmailModal = true">Change</button>
+      </div>
+    </div>
 
     <!-- Danger zone -->
-    <section class="card border-red-200">
-      <h2 class="text-lg font-semibold text-red-600 mb-1">Danger zone</h2>
-      <p class="text-sm text-gray-500 mb-4">Permanently delete your account and all associated data.</p>
-      <button class="btn-danger" @click="showDeleteModal = true">Delete account</button>
-    </section>
+    <div class="rounded-2xl border border-rose-200 bg-white p-6">
+      <h2 class="text-base font-semibold text-rose-600 mb-1">Danger zone</h2>
+      <p class="text-sm text-gray-500 mb-4">Permanently delete your account and all associated data. This cannot be undone.</p>
+      <button class="btn-danger text-sm" @click="showDeleteModal = true">Delete account</button>
+    </div>
 
     <!-- Email change modal -->
     <div v-if="showEmailModal" class="modal-backdrop">
       <div class="modal">
-        <h3 class="text-lg font-semibold mb-4">Change email address</h3>
-        <div v-if="emailChangeStatus === 'sent'" class="text-green-600 text-sm">
-          Check your new email inbox to confirm the change.
+        <h3 class="text-lg font-bold text-gray-900 mb-1">Change email address</h3>
+        <p class="text-sm text-gray-500 mb-5">We'll send a confirmation link to your new email address.</p>
+        <div v-if="emailChangeStatus === 'sent'" class="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700 mb-4">
+          <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Check your new inbox to confirm the change.
         </div>
-        <div v-else class="space-y-3">
-          <input v-model="newEmail" type="email" class="input" placeholder="new@email.com" />
-          <p v-if="emailChangeError" class="text-red-500 text-xs">{{ emailChangeError }}</p>
-          <div class="flex gap-2 justify-end">
-            <button class="btn-secondary" @click="showEmailModal = false">Cancel</button>
+        <div v-else class="space-y-4">
+          <div>
+            <label class="label">New email address</label>
+            <input v-model="newEmail" type="email" class="input" placeholder="new@example.com" autofocus />
+            <p v-if="emailChangeError" class="mt-1.5 text-xs text-rose-600">{{ emailChangeError }}</p>
+          </div>
+          <div class="flex gap-3 justify-end">
+            <button class="btn-secondary" @click="showEmailModal = false; emailChangeStatus = ''">Cancel</button>
             <button class="btn-primary" @click="requestEmailChange">Send confirmation</button>
           </div>
         </div>
+        <button v-if="emailChangeStatus === 'sent'" class="btn-secondary w-full mt-2" @click="showEmailModal = false; emailChangeStatus = ''">Close</button>
       </div>
     </div>
 
     <!-- Delete modal -->
     <div v-if="showDeleteModal" class="modal-backdrop">
       <div class="modal">
-        <h3 class="text-lg font-semibold mb-2">Delete account?</h3>
-        <p class="text-sm text-gray-500 mb-4">You have 7 days to cancel. After that, your account is permanently removed.</p>
-        <div class="flex gap-2 justify-end">
-          <button class="btn-secondary" @click="showDeleteModal = false">Cancel</button>
-          <button class="btn-danger" @click="requestDeletion">Yes, delete my account</button>
+        <div class="mx-auto w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center mb-4">
+          <svg class="w-6 h-6 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 text-center mb-1">Delete account?</h3>
+        <p class="text-sm text-gray-500 text-center mb-6">You have 30 days to cancel. After that, your account and all data are permanently removed.</p>
+        <div class="flex gap-3">
+          <button class="btn-secondary flex-1" @click="showDeleteModal = false">Cancel</button>
+          <button class="btn-danger flex-1" @click="requestDeletion">Yes, delete my account</button>
         </div>
       </div>
     </div>

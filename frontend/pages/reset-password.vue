@@ -48,30 +48,46 @@ const onSubmit = handleSubmit(async (values) => {
 
 <template>
   <div>
-    <h1 class="text-2xl font-bold mb-6">Set new password</h1>
-
-    <div v-if="success" class="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
-      Password updated! Redirecting to login…
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold text-gray-900">Set new password</h1>
+      <p class="mt-1.5 text-sm text-gray-500">Choose a strong password for your account.</p>
     </div>
 
-    <form v-else class="space-y-4" @submit.prevent="onSubmit">
-      <div v-if="serverError" class="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-        {{ serverError }}
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+      <div v-if="success" class="text-center py-4 space-y-4">
+        <div class="mx-auto w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center">
+          <svg class="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div>
+          <p class="font-semibold text-gray-900">Password updated!</p>
+          <p class="text-sm text-gray-500 mt-1">Redirecting you to sign in…</p>
+        </div>
       </div>
 
-      <div>
-        <label class="block text-sm font-medium mb-1">New password</label>
-        <input v-model="password" v-bind="passwordAttrs" type="password" class="input" />
-        <p v-if="errors.password" class="text-red-500 text-xs mt-1">{{ errors.password }}</p>
-      </div>
+      <form v-else class="space-y-4" @submit.prevent="onSubmit">
+        <div v-if="serverError" class="flex items-center gap-2.5 rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-sm text-rose-700">
+          <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {{ serverError }}
+        </div>
 
-      <div>
-        <label class="block text-sm font-medium mb-1">Confirm password</label>
-        <input v-model="confirmPassword" v-bind="confirmPasswordAttrs" type="password" class="input" />
-        <p v-if="errors.confirmPassword" class="text-red-500 text-xs mt-1">{{ errors.confirmPassword }}</p>
-      </div>
+        <div>
+          <label class="label">New password</label>
+          <input v-model="password" v-bind="passwordAttrs" type="password" class="input" placeholder="••••••••" autofocus />
+          <p v-if="errors.password" class="mt-1.5 text-xs text-rose-600">{{ errors.password }}</p>
+        </div>
 
-      <button type="submit" class="btn-primary w-full">Update password</button>
-    </form>
+        <div>
+          <label class="label">Confirm password</label>
+          <input v-model="confirmPassword" v-bind="confirmPasswordAttrs" type="password" class="input" placeholder="••••••••" />
+          <p v-if="errors.confirmPassword" class="mt-1.5 text-xs text-rose-600">{{ errors.confirmPassword }}</p>
+        </div>
+
+        <button type="submit" class="btn-primary w-full mt-2">Update password</button>
+      </form>
+    </div>
   </div>
 </template>

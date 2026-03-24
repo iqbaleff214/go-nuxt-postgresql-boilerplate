@@ -41,34 +41,62 @@ async function resend() {
 </script>
 
 <template>
-  <div class="text-center">
-    <div v-if="status === 'loading'" class="space-y-3">
-      <div class="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto" />
-      <p class="text-gray-500">Verifying your email…</p>
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-10 text-center">
+    <!-- Loading -->
+    <div v-if="status === 'loading'" class="space-y-4">
+      <div class="mx-auto w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center">
+        <svg class="w-6 h-6 text-gray-400 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
+      </div>
+      <p class="text-gray-500 text-sm">Verifying your email address…</p>
     </div>
 
-    <div v-else-if="status === 'success'" class="space-y-4">
-      <div class="text-5xl">✓</div>
-      <h1 class="text-2xl font-bold">Email verified!</h1>
-      <p class="text-gray-500">Your account is ready. You can now log in.</p>
-      <NuxtLink to="/login" class="btn-primary inline-block">Go to login</NuxtLink>
+    <!-- Success -->
+    <div v-else-if="status === 'success'" class="space-y-5">
+      <div class="mx-auto w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center">
+        <svg class="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold text-gray-900">Email verified!</h1>
+        <p class="text-sm text-gray-500 mt-1.5">Your account is ready. You can now sign in.</p>
+      </div>
+      <NuxtLink to="/login" class="btn-primary inline-flex">Go to sign in</NuxtLink>
     </div>
 
-    <div v-else class="space-y-4">
-      <h1 class="text-2xl font-bold">Verification failed</h1>
-      <p class="text-red-600">{{ errorMessage }}</p>
+    <!-- Error -->
+    <div v-else class="space-y-6">
+      <div class="mx-auto w-14 h-14 rounded-full bg-rose-100 flex items-center justify-center">
+        <svg class="w-7 h-7 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold text-gray-900">Verification failed</h1>
+        <p class="text-sm text-rose-600 mt-1.5">{{ errorMessage }}</p>
+      </div>
 
-      <div class="mt-6 text-left">
-        <p class="text-sm text-gray-600 mb-2">Resend verification email:</p>
-        <div v-if="resendStatus === 'sent'" class="text-green-600 text-sm">Verification email sent. Check your inbox.</div>
+      <div class="text-left space-y-3 border-t border-gray-100 pt-6">
+        <p class="text-sm font-medium text-gray-700">Resend verification email</p>
+        <div v-if="resendStatus === 'sent'" class="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 p-3.5 text-sm text-emerald-700">
+          <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Verification email sent. Check your inbox.
+        </div>
         <div v-else class="flex gap-2">
           <input v-model="resendEmail" type="email" class="input flex-1" placeholder="your@email.com" />
           <button class="btn-primary" @click="resend">Resend</button>
         </div>
-        <p v-if="resendStatus === 'error'" class="text-red-500 text-xs mt-1">Failed to resend. Try again later.</p>
+        <p v-if="resendStatus === 'error'" class="text-xs text-rose-600">Failed to resend. Try again later.</p>
       </div>
 
-      <NuxtLink to="/login" class="text-sm text-gray-500 hover:underline block mt-2">Back to login</NuxtLink>
+      <NuxtLink to="/login" class="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors">
+        ← Back to sign in
+      </NuxtLink>
     </div>
   </div>
 </template>

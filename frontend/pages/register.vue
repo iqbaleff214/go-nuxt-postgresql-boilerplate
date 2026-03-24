@@ -58,53 +58,68 @@ const onSubmit = handleSubmit(async (values) => {
 
 <template>
   <div>
-    <h1 class="text-2xl font-bold mb-6">Create account</h1>
-
-    <div v-if="success" class="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
-      Check your email to verify your account before logging in.
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold text-gray-900">Create your account</h1>
+      <p class="mt-1.5 text-sm text-gray-500">Join today — it's free</p>
     </div>
 
-    <form v-else class="space-y-4" @submit.prevent="onSubmit">
-      <div v-if="serverError" class="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-        {{ serverError }}
-      </div>
-
-      <div class="grid grid-cols-2 gap-4">
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+      <div v-if="success" class="flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
+        <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
         <div>
-          <label class="block text-sm font-medium mb-1">First name</label>
-          <input v-model="firstName" v-bind="firstNameAttrs" type="text" class="input" placeholder="Jane" />
-          <p v-if="errors.firstName" class="text-red-500 text-xs mt-1">{{ errors.firstName }}</p>
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1">Last name</label>
-          <input v-model="lastName" v-bind="lastNameAttrs" type="text" class="input" placeholder="Doe" />
-          <p v-if="errors.lastName" class="text-red-500 text-xs mt-1">{{ errors.lastName }}</p>
+          <p class="font-semibold">Check your inbox</p>
+          <p class="mt-0.5 text-emerald-600">We sent a verification link to your email address.</p>
         </div>
       </div>
 
-      <div>
-        <label class="block text-sm font-medium mb-1">Email</label>
-        <input v-model="email" v-bind="emailAttrs" type="email" class="input" placeholder="jane@example.com" />
-        <p v-if="errors.email" class="text-red-500 text-xs mt-1">{{ errors.email }}</p>
-      </div>
+      <form v-else class="space-y-4" @submit.prevent="onSubmit">
+        <div v-if="serverError" class="flex items-center gap-2.5 rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-sm text-rose-700">
+          <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {{ serverError }}
+        </div>
 
-      <div>
-        <label class="block text-sm font-medium mb-1">Password</label>
-        <input v-model="password" v-bind="passwordAttrs" type="password" class="input" />
-        <p v-if="errors.password" class="text-red-500 text-xs mt-1">{{ errors.password }}</p>
-      </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="label">First name</label>
+            <input v-model="firstName" v-bind="firstNameAttrs" type="text" class="input" placeholder="Jane" />
+            <p v-if="errors.firstName" class="mt-1.5 text-xs text-rose-600">{{ errors.firstName }}</p>
+          </div>
+          <div>
+            <label class="label">Last name</label>
+            <input v-model="lastName" v-bind="lastNameAttrs" type="text" class="input" placeholder="Doe" />
+            <p v-if="errors.lastName" class="mt-1.5 text-xs text-rose-600">{{ errors.lastName }}</p>
+          </div>
+        </div>
 
-      <div>
-        <label class="block text-sm font-medium mb-1">Confirm password</label>
-        <input v-model="confirmPassword" v-bind="confirmPasswordAttrs" type="password" class="input" />
-        <p v-if="errors.confirmPassword" class="text-red-500 text-xs mt-1">{{ errors.confirmPassword }}</p>
-      </div>
+        <div>
+          <label class="label">Email address</label>
+          <input v-model="email" v-bind="emailAttrs" type="email" class="input" placeholder="jane@example.com" />
+          <p v-if="errors.email" class="mt-1.5 text-xs text-rose-600">{{ errors.email }}</p>
+        </div>
 
-      <button type="submit" class="btn-primary w-full">Create account</button>
+        <div>
+          <label class="label">Password</label>
+          <input v-model="password" v-bind="passwordAttrs" type="password" class="input" placeholder="••••••••" />
+          <p v-if="errors.password" class="mt-1.5 text-xs text-rose-600">{{ errors.password }}</p>
+        </div>
 
-      <p class="text-center text-sm text-gray-600">
-        Already have an account? <NuxtLink to="/login" class="text-primary underline">Sign in</NuxtLink>
-      </p>
-    </form>
+        <div>
+          <label class="label">Confirm password</label>
+          <input v-model="confirmPassword" v-bind="confirmPasswordAttrs" type="password" class="input" placeholder="••••••••" />
+          <p v-if="errors.confirmPassword" class="mt-1.5 text-xs text-rose-600">{{ errors.confirmPassword }}</p>
+        </div>
+
+        <button type="submit" class="btn-primary w-full mt-2">Create account</button>
+      </form>
+    </div>
+
+    <p class="mt-6 text-center text-sm text-gray-500">
+      Already have an account?
+      <NuxtLink to="/login" class="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors">Sign in</NuxtLink>
+    </p>
   </div>
 </template>

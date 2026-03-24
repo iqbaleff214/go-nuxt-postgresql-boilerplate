@@ -38,33 +38,46 @@ const onSubmit = handleSubmit(async (values) => {
 
 <template>
   <div>
-    <h1 class="text-2xl font-bold mb-6">Sign in</h1>
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold text-gray-900">Welcome back</h1>
+      <p class="mt-1.5 text-sm text-gray-500">Sign in to your account to continue</p>
+    </div>
 
-    <form class="space-y-4" @submit.prevent="onSubmit">
-      <div v-if="serverError" class="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 space-y-5">
+      <div v-if="serverError" class="flex items-center gap-2.5 rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-sm text-rose-700">
+        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
         {{ serverError }}
       </div>
 
-      <div>
-        <label class="block text-sm font-medium mb-1">Email</label>
-        <input v-model="email" v-bind="emailAttrs" type="email" class="input" placeholder="jane@example.com" />
-        <p v-if="errors.email" class="text-red-500 text-xs mt-1">{{ errors.email }}</p>
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium mb-1">Password</label>
-        <input v-model="password" v-bind="passwordAttrs" type="password" class="input" />
-        <p v-if="errors.password" class="text-red-500 text-xs mt-1">{{ errors.password }}</p>
-        <div class="text-right mt-1">
-          <NuxtLink to="/forgot-password" class="text-xs text-gray-500 hover:underline">Forgot password?</NuxtLink>
+      <form class="space-y-4" @submit.prevent="onSubmit">
+        <div>
+          <label class="label">Email address</label>
+          <input v-model="email" v-bind="emailAttrs" type="email" class="input" placeholder="you@example.com" autofocus />
+          <p v-if="errors.email" class="mt-1.5 text-xs text-rose-600">{{ errors.email }}</p>
         </div>
-      </div>
 
-      <button type="submit" class="btn-primary w-full">Sign in</button>
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="label !mb-0">Password</label>
+            <NuxtLink to="/forgot-password" class="text-xs font-medium text-emerald-600 hover:text-emerald-700 transition-colors">
+              Forgot password?
+            </NuxtLink>
+          </div>
+          <input v-model="password" v-bind="passwordAttrs" type="password" class="input" placeholder="••••••••" />
+          <p v-if="errors.password" class="mt-1.5 text-xs text-rose-600">{{ errors.password }}</p>
+        </div>
 
-      <p class="text-center text-sm text-gray-600">
-        No account? <NuxtLink to="/register" class="text-primary underline">Create one</NuxtLink>
-      </p>
-    </form>
+        <button type="submit" class="btn-primary w-full mt-2">
+          Sign in
+        </button>
+      </form>
+    </div>
+
+    <p class="mt-6 text-center text-sm text-gray-500">
+      Don't have an account?
+      <NuxtLink to="/register" class="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors">Create one</NuxtLink>
+    </p>
   </div>
 </template>
