@@ -17,7 +17,21 @@ func NewAdminHandler(users *service.UserService) *AdminHandler {
 	return &AdminHandler{users: users}
 }
 
-// GET /api/v1/admin/users
+// ListUsers godoc
+// @Summary      List all users (paginated, filterable)
+// @Tags         admin
+// @Security     BearerAuth
+// @Produce      json
+// @Param        page              query  int     false  "Page number"
+// @Param        page_size         query  int     false  "Page size"
+// @Param        role              query  string  false  "Filter by role"
+// @Param        status            query  string  false  "Filter by status"
+// @Param        is_email_verified query  bool    false  "Filter by email verification"
+// @Param        search            query  string  false  "Search by name or email"
+// @Success      200  {object}  envelope
+// @Failure      401  {object}  errorEnvelope
+// @Failure      403  {object}  errorEnvelope
+// @Router       /admin/users [get]
 func (h *AdminHandler) ListUsers(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "20"))
@@ -54,7 +68,18 @@ func (h *AdminHandler) ListUsers(c *gin.Context) {
 	})
 }
 
-// GET /api/v1/admin/users/:id
+// GetUser godoc
+// @Summary      Get a user by ID
+// @Tags         admin
+// @Security     BearerAuth
+// @Produce      json
+// @Param        id  path  string  true  "User UUID"
+// @Success      200  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Failure      403  {object}  errorEnvelope
+// @Failure      404  {object}  errorEnvelope
+// @Router       /admin/users/{id} [get]
 func (h *AdminHandler) GetUser(c *gin.Context) {
 	targetID, err := uuid.Parse(c.Param("id"))
 	if err != nil {
@@ -69,7 +94,18 @@ func (h *AdminHandler) GetUser(c *gin.Context) {
 	ok(c, http.StatusOK, "ok", user)
 }
 
-// POST /api/v1/admin/users
+// CreateUser godoc
+// @Summary      Create a user (sends set-password email)
+// @Tags         admin
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        body  body  object{email=string,first_name=string,last_name=string,role=string}  true  "New user details"
+// @Success      201  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Failure      403  {object}  errorEnvelope
+// @Router       /admin/users [post]
 func (h *AdminHandler) CreateUser(c *gin.Context) {
 	var req struct {
 		Email     string `json:"email"      binding:"required"`
@@ -88,7 +124,19 @@ func (h *AdminHandler) CreateUser(c *gin.Context) {
 	ok(c, http.StatusCreated, "User created. A set-password email has been sent.", nil)
 }
 
-// PATCH /api/v1/admin/users/:id
+// UpdateUser godoc
+// @Summary      Update a user's profile or status
+// @Tags         admin
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        id    path  string  true  "User UUID"
+// @Param        body  body  object{first_name=string,last_name=string,display_name=string,bio=string,role=string,status=string}  false  "Fields to update"
+// @Success      200  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Failure      403  {object}  errorEnvelope
+// @Router       /admin/users/{id} [patch]
 func (h *AdminHandler) UpdateUser(c *gin.Context) {
 	callerID := mustUserID(c)
 	targetID, err := uuid.Parse(c.Param("id"))
@@ -123,7 +171,17 @@ func (h *AdminHandler) UpdateUser(c *gin.Context) {
 	ok(c, http.StatusOK, "User updated.", user)
 }
 
-// DELETE /api/v1/admin/users/:id
+// DeleteUser godoc
+// @Summary      Hard-delete a user immediately
+// @Tags         admin
+// @Security     BearerAuth
+// @Produce      json
+// @Param        id  path  string  true  "User UUID"
+// @Success      200  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Failure      403  {object}  errorEnvelope
+// @Router       /admin/users/{id} [delete]
 func (h *AdminHandler) DeleteUser(c *gin.Context) {
 	callerID := mustUserID(c)
 	targetID, err := uuid.Parse(c.Param("id"))
@@ -138,22 +196,62 @@ func (h *AdminHandler) DeleteUser(c *gin.Context) {
 	ok(c, http.StatusOK, "User deleted.", nil)
 }
 
-// POST /api/v1/admin/users/:id/activate
+// ActivateUser godoc
+// @Summary      Set user status to active
+// @Tags         admin
+// @Security     BearerAuth
+// @Produce      json
+// @Param        id  path  string  true  "User UUID"
+// @Success      200  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Failure      403  {object}  errorEnvelope
+// @Router       /admin/users/{id}/activate [post]
 func (h *AdminHandler) ActivateUser(c *gin.Context) {
 	h.setStatus(c, "active")
 }
 
-// POST /api/v1/admin/users/:id/deactivate
+// DeactivateUser godoc
+// @Summary      Set user status to inactive
+// @Tags         admin
+// @Security     BearerAuth
+// @Produce      json
+// @Param        id  path  string  true  "User UUID"
+// @Success      200  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Failure      403  {object}  errorEnvelope
+// @Router       /admin/users/{id}/deactivate [post]
 func (h *AdminHandler) DeactivateUser(c *gin.Context) {
 	h.setStatus(c, "inactive")
 }
 
-// POST /api/v1/admin/users/:id/ban
+// BanUser godoc
+// @Summary      Ban a user
+// @Tags         admin
+// @Security     BearerAuth
+// @Produce      json
+// @Param        id  path  string  true  "User UUID"
+// @Success      200  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Failure      403  {object}  errorEnvelope
+// @Router       /admin/users/{id}/ban [post]
 func (h *AdminHandler) BanUser(c *gin.Context) {
 	h.setStatus(c, "banned")
 }
 
-// POST /api/v1/admin/users/:id/unban
+// UnbanUser godoc
+// @Summary      Unban a user (sets status to active)
+// @Tags         admin
+// @Security     BearerAuth
+// @Produce      json
+// @Param        id  path  string  true  "User UUID"
+// @Success      200  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Failure      403  {object}  errorEnvelope
+// @Router       /admin/users/{id}/unban [post]
 func (h *AdminHandler) UnbanUser(c *gin.Context) {
 	h.setStatus(c, "active")
 }

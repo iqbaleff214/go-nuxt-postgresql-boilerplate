@@ -17,7 +17,18 @@ func NewAnnouncementHandler(client *asynq.Client) *AnnouncementHandler {
 	return &AnnouncementHandler{client: client}
 }
 
-// POST /api/v1/admin/announcements
+// Broadcast godoc
+// @Summary      Broadcast a system announcement to all active users via WebSocket
+// @Tags         admin
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        body  body  object{title=string,body=string}  true  "Announcement"
+// @Success      202  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Failure      403  {object}  errorEnvelope
+// @Router       /admin/announcements [post]
 func (h *AnnouncementHandler) Broadcast(c *gin.Context) {
 	var req struct {
 		Title string `json:"title" binding:"required"`

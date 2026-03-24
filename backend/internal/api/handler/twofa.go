@@ -17,7 +17,15 @@ func NewTwoFAHandler(twofa *service.TwoFAService, cfg *core.Config) *TwoFAHandle
 	return &TwoFAHandler{twofa: twofa, cfg: cfg}
 }
 
-// POST /api/v1/auth/2fa/setup
+// Setup godoc
+// @Summary      Begin 2FA setup — returns QR code
+// @Tags         2fa
+// @Security     BearerAuth
+// @Produce      json
+// @Success      200  {object}  envelope{data=object{otpauth_url=string,qr_data_uri=string}}
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Router       /auth/2fa/setup [post]
 func (h *TwoFAHandler) Setup(c *gin.Context) {
 	userID := mustUserID(c)
 	otpauthURL, qrDataURI, err := h.twofa.Setup2FA(c.Request.Context(), userID.String())
@@ -31,7 +39,17 @@ func (h *TwoFAHandler) Setup(c *gin.Context) {
 	})
 }
 
-// POST /api/v1/auth/2fa/confirm
+// Confirm godoc
+// @Summary      Confirm 2FA setup with TOTP code — returns recovery codes
+// @Tags         2fa
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        body  body  object{code=string}  true  "TOTP code"
+// @Success      200  {object}  envelope{data=object{recovery_codes=[]string}}
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Router       /auth/2fa/confirm [post]
 func (h *TwoFAHandler) Confirm(c *gin.Context) {
 	userID := mustUserID(c)
 	var req struct {
@@ -51,7 +69,17 @@ func (h *TwoFAHandler) Confirm(c *gin.Context) {
 	})
 }
 
-// POST /api/v1/auth/2fa/disable
+// Disable godoc
+// @Summary      Disable 2FA
+// @Tags         2fa
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        body  body  object{password=string,code=string}  true  "Current password and TOTP code"
+// @Success      200  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Router       /auth/2fa/disable [post]
 func (h *TwoFAHandler) Disable(c *gin.Context) {
 	userID := mustUserID(c)
 	var req struct {
@@ -69,7 +97,16 @@ func (h *TwoFAHandler) Disable(c *gin.Context) {
 	ok(c, http.StatusOK, "2FA disabled.", nil)
 }
 
-// POST /api/v1/auth/2fa/verify  (public — uses challenge token)
+// Verify godoc
+// @Summary      Complete 2FA login with TOTP code or recovery code
+// @Tags         2fa
+// @Accept       json
+// @Produce      json
+// @Param        body  body  object{mfa_challenge_token=string,code=string}  true  "Challenge token and TOTP/recovery code"
+// @Success      200  {object}  envelope{data=object{access_token=string}}
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Router       /auth/2fa/verify [post]
 func (h *TwoFAHandler) Verify(c *gin.Context) {
 	var req struct {
 		MFAChallengeToken string `json:"mfa_challenge_token" binding:"required"`
@@ -90,7 +127,17 @@ func (h *TwoFAHandler) Verify(c *gin.Context) {
 	ok(c, http.StatusOK, "Login successful.", gin.H{"access_token": accessToken})
 }
 
-// POST /api/v1/auth/2fa/recovery-codes/regenerate
+// RegenerateCodes godoc
+// @Summary      Regenerate 2FA recovery codes
+// @Tags         2fa
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        body  body  object{password=string,code=string}  true  "Current password and TOTP code"
+// @Success      200  {object}  envelope{data=object{recovery_codes=[]string}}
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Router       /auth/2fa/recovery-codes/regenerate [post]
 func (h *TwoFAHandler) RegenerateCodes(c *gin.Context) {
 	userID := mustUserID(c)
 	var req struct {

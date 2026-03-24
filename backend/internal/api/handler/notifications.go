@@ -18,7 +18,16 @@ func NewNotificationHandler(svc *service.NotificationService) *NotificationHandl
 	return &NotificationHandler{svc: svc}
 }
 
-// GET /api/v1/notifications
+// List godoc
+// @Summary      List notifications for the current user
+// @Tags         notifications
+// @Security     BearerAuth
+// @Produce      json
+// @Param        page       query  int  false  "Page number (default 1)"
+// @Param        page_size  query  int  false  "Page size (default 20)"
+// @Success      200  {object}  envelope
+// @Failure      401  {object}  errorEnvelope
+// @Router       /notifications [get]
 func (h *NotificationHandler) List(c *gin.Context) {
 	userID := mustUserID(c)
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
@@ -40,7 +49,14 @@ func (h *NotificationHandler) List(c *gin.Context) {
 	})
 }
 
-// GET /api/v1/notifications/unread-count
+// UnreadCount godoc
+// @Summary      Get unread notification count
+// @Tags         notifications
+// @Security     BearerAuth
+// @Produce      json
+// @Success      200  {object}  envelope{data=object{unread_count=int}}
+// @Failure      401  {object}  errorEnvelope
+// @Router       /notifications/unread-count [get]
 func (h *NotificationHandler) UnreadCount(c *gin.Context) {
 	userID := mustUserID(c)
 	count, err := h.svc.UnreadCount(c.Request.Context(), userID)
@@ -51,7 +67,16 @@ func (h *NotificationHandler) UnreadCount(c *gin.Context) {
 	ok(c, http.StatusOK, "ok", gin.H{"unread_count": count})
 }
 
-// PATCH /api/v1/notifications/:id/read
+// MarkRead godoc
+// @Summary      Mark a notification as read
+// @Tags         notifications
+// @Security     BearerAuth
+// @Produce      json
+// @Param        id  path  string  true  "Notification UUID"
+// @Success      200  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Router       /notifications/{id}/read [patch]
 func (h *NotificationHandler) MarkRead(c *gin.Context) {
 	userID := mustUserID(c)
 	notifID, err := uuid.Parse(c.Param("id"))
@@ -66,7 +91,14 @@ func (h *NotificationHandler) MarkRead(c *gin.Context) {
 	ok(c, http.StatusOK, "notification marked as read", nil)
 }
 
-// PATCH /api/v1/notifications/read-all
+// MarkAllRead godoc
+// @Summary      Mark all notifications as read
+// @Tags         notifications
+// @Security     BearerAuth
+// @Produce      json
+// @Success      200  {object}  envelope
+// @Failure      401  {object}  errorEnvelope
+// @Router       /notifications/read-all [patch]
 func (h *NotificationHandler) MarkAllRead(c *gin.Context) {
 	userID := mustUserID(c)
 	if err := h.svc.MarkAllRead(c.Request.Context(), userID); err != nil {

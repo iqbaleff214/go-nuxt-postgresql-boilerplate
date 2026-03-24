@@ -10,6 +10,13 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+// HealthHandler godoc
+// @Summary      Health check — pings DB and Redis
+// @Tags         system
+// @Produce      json
+// @Success      200  {object}  object{status=string,db=string,redis=string}
+// @Failure      503  {object}  object{status=string,db=string,redis=string}
+// @Router       /health [get]
 func HealthHandler(db *pgxpool.Pool, rdb *redis.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(c.Request.Context(), 3*time.Second)

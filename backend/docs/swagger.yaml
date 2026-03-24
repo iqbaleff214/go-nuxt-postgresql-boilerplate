@@ -1,4 +1,31 @@
 basePath: /api/v1
+definitions:
+  handler.envelope:
+    properties:
+      data: {}
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  handler.errorEnvelope:
+    properties:
+      errors:
+        items:
+          $ref: '#/definitions/handler.fieldError'
+        type: array
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  handler.fieldError:
+    properties:
+      detail:
+        type: string
+      field:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -12,7 +39,1190 @@ info:
   termsOfService: http://swagger.io/terms/
   title: Go-Nuxt Starter Kit API
   version: "1.0"
-paths: {}
+paths:
+  /admin/announcements:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Announcement
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            body:
+              type: string
+            title:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Broadcast a system announcement to all active users via WebSocket
+      tags:
+      - admin
+  /admin/users:
+    get:
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      - description: Filter by role
+        in: query
+        name: role
+        type: string
+      - description: Filter by status
+        in: query
+        name: status
+        type: string
+      - description: Filter by email verification
+        in: query
+        name: is_email_verified
+        type: boolean
+      - description: Search by name or email
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: List all users (paginated, filterable)
+      tags:
+      - admin
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: New user details
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+            first_name:
+              type: string
+            last_name:
+              type: string
+            role:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Create a user (sends set-password email)
+      tags:
+      - admin
+  /admin/users/{id}:
+    delete:
+      parameters:
+      - description: User UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Hard-delete a user immediately
+      tags:
+      - admin
+    get:
+      parameters:
+      - description: User UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Get a user by ID
+      tags:
+      - admin
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: User UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Fields to update
+        in: body
+        name: body
+        schema:
+          properties:
+            bio:
+              type: string
+            display_name:
+              type: string
+            first_name:
+              type: string
+            last_name:
+              type: string
+            role:
+              type: string
+            status:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Update a user's profile or status
+      tags:
+      - admin
+  /admin/users/{id}/activate:
+    post:
+      parameters:
+      - description: User UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Set user status to active
+      tags:
+      - admin
+  /admin/users/{id}/ban:
+    post:
+      parameters:
+      - description: User UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Ban a user
+      tags:
+      - admin
+  /admin/users/{id}/deactivate:
+    post:
+      parameters:
+      - description: User UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Set user status to inactive
+      tags:
+      - admin
+  /admin/users/{id}/unban:
+    post:
+      parameters:
+      - description: User UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Unban a user (sets status to active)
+      tags:
+      - admin
+  /auth/2fa/confirm:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: TOTP code
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            code:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.envelope'
+            - properties:
+                data:
+                  properties:
+                    recovery_codes:
+                      items:
+                        type: string
+                      type: array
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Confirm 2FA setup with TOTP code — returns recovery codes
+      tags:
+      - 2fa
+  /auth/2fa/disable:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Current password and TOTP code
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            code:
+              type: string
+            password:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Disable 2FA
+      tags:
+      - 2fa
+  /auth/2fa/recovery-codes/regenerate:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Current password and TOTP code
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            code:
+              type: string
+            password:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.envelope'
+            - properties:
+                data:
+                  properties:
+                    recovery_codes:
+                      items:
+                        type: string
+                      type: array
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Regenerate 2FA recovery codes
+      tags:
+      - 2fa
+  /auth/2fa/setup:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.envelope'
+            - properties:
+                data:
+                  properties:
+                    otpauth_url:
+                      type: string
+                    qr_data_uri:
+                      type: string
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Begin 2FA setup — returns QR code
+      tags:
+      - 2fa
+  /auth/2fa/verify:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Challenge token and TOTP/recovery code
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            code:
+              type: string
+            mfa_challenge_token:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.envelope'
+            - properties:
+                data:
+                  properties:
+                    access_token:
+                      type: string
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      summary: Complete 2FA login with TOTP code or recovery code
+      tags:
+      - 2fa
+  /auth/change-password:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Passwords
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            current_password:
+              type: string
+            new_password:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Change password (requires auth)
+      tags:
+      - auth
+  /auth/forgot-password:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Registered email
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      summary: Request a password reset link
+      tags:
+      - auth
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login credentials
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+            password:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.envelope'
+            - properties:
+                data:
+                  properties:
+                    access_token:
+                      type: string
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      summary: Login with email and password
+      tags:
+      - auth
+  /auth/logout:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+      summary: Logout (revoke refresh token)
+      tags:
+      - auth
+  /auth/refresh:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.envelope'
+            - properties:
+                data:
+                  properties:
+                    access_token:
+                      type: string
+                  type: object
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      summary: Refresh access token using HTTP-only refresh cookie
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Registration payload
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+            first_name:
+              type: string
+            last_name:
+              type: string
+            password:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      summary: Register a new user
+      tags:
+      - auth
+  /auth/resend-verification:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Email address
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      summary: Resend email verification link
+      tags:
+      - auth
+  /auth/reset-password:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Reset payload
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            password:
+              type: string
+            token:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      summary: Reset password using token from email
+      tags:
+      - auth
+  /auth/verify-email:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Verification token
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            token:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      summary: Verify email address
+      tags:
+      - auth
+  /health:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              db:
+                type: string
+              redis:
+                type: string
+              status:
+                type: string
+            type: object
+        "503":
+          description: Service Unavailable
+          schema:
+            properties:
+              db:
+                type: string
+              redis:
+                type: string
+              status:
+                type: string
+            type: object
+      summary: Health check — pings DB and Redis
+      tags:
+      - system
+  /notifications:
+    get:
+      parameters:
+      - description: Page number (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Page size (default 20)
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: List notifications for the current user
+      tags:
+      - notifications
+  /notifications/{id}/read:
+    patch:
+      parameters:
+      - description: Notification UUID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Mark a notification as read
+      tags:
+      - notifications
+  /notifications/read-all:
+    patch:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Mark all notifications as read
+      tags:
+      - notifications
+  /notifications/unread-count:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.envelope'
+            - properties:
+                data:
+                  properties:
+                    unread_count:
+                      type: integer
+                  type: object
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Get unread notification count
+      tags:
+      - notifications
+  /profile:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Get current user's profile
+      tags:
+      - profile
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Fields to update
+        in: body
+        name: body
+        schema:
+          properties:
+            bio:
+              type: string
+            display_name:
+              type: string
+            first_name:
+              type: string
+            last_name:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Update profile fields
+      tags:
+      - profile
+  /profile/avatar:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Avatar image
+        in: formData
+        name: avatar
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handler.envelope'
+            - properties:
+                data:
+                  properties:
+                    avatar_url:
+                      type: string
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Upload avatar image (multipart/form-data, max 2 MB)
+      tags:
+      - profile
+  /profile/delete:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Schedule account for deletion (30-day window, sends cancellation email)
+      tags:
+      - profile
+  /profile/delete/cancel:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Cancellation token
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            token:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      summary: Cancel scheduled account deletion using token from email
+      tags:
+      - profile
+  /profile/email:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: New email
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Request an email address change (sends verification to new address)
+      tags:
+      - profile
+  /profile/email/confirm:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Token and new email
+        in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            new_email:
+              type: string
+            token:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.envelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorEnvelope'
+      summary: Confirm email change with token from verification email
+      tags:
+      - profile
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer" followed by a space and the access token.

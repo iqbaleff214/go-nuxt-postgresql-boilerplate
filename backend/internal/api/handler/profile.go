@@ -15,7 +15,15 @@ func NewProfileHandler(users *service.UserService) *ProfileHandler {
 	return &ProfileHandler{users: users}
 }
 
-// GET /api/v1/profile
+// GetProfile godoc
+// @Summary      Get current user's profile
+// @Tags         profile
+// @Security     BearerAuth
+// @Produce      json
+// @Success      200  {object}  envelope
+// @Failure      401  {object}  errorEnvelope
+// @Failure      404  {object}  errorEnvelope
+// @Router       /profile [get]
 func (h *ProfileHandler) GetProfile(c *gin.Context) {
 	userID := mustUserID(c)
 	user, err := h.users.GetProfile(c.Request.Context(), userID)
@@ -26,7 +34,17 @@ func (h *ProfileHandler) GetProfile(c *gin.Context) {
 	ok(c, http.StatusOK, "ok", user)
 }
 
-// PATCH /api/v1/profile
+// UpdateProfile godoc
+// @Summary      Update profile fields
+// @Tags         profile
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        body  body  object{first_name=string,last_name=string,display_name=string,bio=string}  false  "Fields to update"
+// @Success      200  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Router       /profile [patch]
 func (h *ProfileHandler) UpdateProfile(c *gin.Context) {
 	userID := mustUserID(c)
 	var req struct {
@@ -47,7 +65,17 @@ func (h *ProfileHandler) UpdateProfile(c *gin.Context) {
 	ok(c, http.StatusOK, "Profile updated.", user)
 }
 
-// POST /api/v1/profile/avatar
+// UploadAvatar godoc
+// @Summary      Upload avatar image (multipart/form-data, max 2 MB)
+// @Tags         profile
+// @Security     BearerAuth
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        avatar  formData  file  true  "Avatar image"
+// @Success      200  {object}  envelope{data=object{avatar_url=string}}
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Router       /profile/avatar [post]
 func (h *ProfileHandler) UploadAvatar(c *gin.Context) {
 	userID := mustUserID(c)
 	file, header, err := c.Request.FormFile("avatar")
@@ -65,7 +93,17 @@ func (h *ProfileHandler) UploadAvatar(c *gin.Context) {
 	ok(c, http.StatusOK, "Avatar uploaded.", gin.H{"avatar_url": avatarURL})
 }
 
-// POST /api/v1/profile/email
+// RequestEmailChange godoc
+// @Summary      Request an email address change (sends verification to new address)
+// @Tags         profile
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        body  body  object{email=string}  true  "New email"
+// @Success      200  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Router       /profile/email [post]
 func (h *ProfileHandler) RequestEmailChange(c *gin.Context) {
 	userID := mustUserID(c)
 	var req struct {
@@ -82,7 +120,15 @@ func (h *ProfileHandler) RequestEmailChange(c *gin.Context) {
 	ok(c, http.StatusOK, "A verification link has been sent to your new email address.", nil)
 }
 
-// POST /api/v1/profile/email/confirm
+// ConfirmEmailChange godoc
+// @Summary      Confirm email change with token from verification email
+// @Tags         profile
+// @Accept       json
+// @Produce      json
+// @Param        body  body  object{token=string,new_email=string}  true  "Token and new email"
+// @Success      200  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Router       /profile/email/confirm [post]
 func (h *ProfileHandler) ConfirmEmailChange(c *gin.Context) {
 	var req struct {
 		Token    string `json:"token"     binding:"required"`
@@ -99,7 +145,15 @@ func (h *ProfileHandler) ConfirmEmailChange(c *gin.Context) {
 	ok(c, http.StatusOK, "Email updated successfully.", nil)
 }
 
-// POST /api/v1/profile/delete
+// RequestDeletion godoc
+// @Summary      Schedule account for deletion (30-day window, sends cancellation email)
+// @Tags         profile
+// @Security     BearerAuth
+// @Produce      json
+// @Success      200  {object}  envelope
+// @Failure      401  {object}  errorEnvelope
+// @Failure      500  {object}  errorEnvelope
+// @Router       /profile/delete [post]
 func (h *ProfileHandler) RequestDeletion(c *gin.Context) {
 	userID := mustUserID(c)
 	if err := h.users.RequestAccountDeletion(c.Request.Context(), userID); err != nil {
@@ -109,7 +163,15 @@ func (h *ProfileHandler) RequestDeletion(c *gin.Context) {
 	ok(c, http.StatusOK, "Your account has been scheduled for deletion. Check your email for a cancellation link.", nil)
 }
 
-// POST /api/v1/profile/delete/cancel
+// CancelDeletion godoc
+// @Summary      Cancel scheduled account deletion using token from email
+// @Tags         profile
+// @Accept       json
+// @Produce      json
+// @Param        body  body  object{token=string}  true  "Cancellation token"
+// @Success      200  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Router       /profile/delete/cancel [post]
 func (h *ProfileHandler) CancelDeletion(c *gin.Context) {
 	var req struct {
 		Token string `json:"token" binding:"required"`

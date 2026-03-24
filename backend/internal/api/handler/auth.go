@@ -20,7 +20,16 @@ func NewAuthHandler(auth *service.AuthService, cfg *core.Config) *AuthHandler {
 	return &AuthHandler{auth: auth, cfg: cfg}
 }
 
-// POST /api/v1/auth/register
+// Register godoc
+// @Summary      Register a new user
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        body  body  object{email=string,password=string,first_name=string,last_name=string}  true  "Registration payload"
+// @Success      201  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Failure      422  {object}  errorEnvelope
+// @Router       /auth/register [post]
 func (h *AuthHandler) Register(c *gin.Context) {
 	var req struct {
 		Email     string `json:"email"     binding:"required"`
@@ -39,7 +48,15 @@ func (h *AuthHandler) Register(c *gin.Context) {
 	ok(c, http.StatusCreated, "Registration successful. Please check your email to verify your account.", nil)
 }
 
-// POST /api/v1/auth/verify-email
+// VerifyEmail godoc
+// @Summary      Verify email address
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        body  body  object{token=string}  true  "Verification token"
+// @Success      200  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Router       /auth/verify-email [post]
 func (h *AuthHandler) VerifyEmail(c *gin.Context) {
 	var req struct {
 		Token string `json:"token" binding:"required"`
@@ -55,7 +72,15 @@ func (h *AuthHandler) VerifyEmail(c *gin.Context) {
 	ok(c, http.StatusOK, "Email verified successfully.", nil)
 }
 
-// POST /api/v1/auth/resend-verification
+// ResendVerification godoc
+// @Summary      Resend email verification link
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        body  body  object{email=string}  true  "Email address"
+// @Success      200  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Router       /auth/resend-verification [post]
 func (h *AuthHandler) ResendVerification(c *gin.Context) {
 	var req struct {
 		Email string `json:"email" binding:"required"`
@@ -68,7 +93,16 @@ func (h *AuthHandler) ResendVerification(c *gin.Context) {
 	ok(c, http.StatusOK, "If that email is registered and unverified, a new link has been sent.", nil)
 }
 
-// POST /api/v1/auth/login
+// Login godoc
+// @Summary      Login with email and password
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        body  body  object{email=string,password=string}  true  "Login credentials"
+// @Success      200  {object}  envelope{data=object{access_token=string}}
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Router       /auth/login [post]
 func (h *AuthHandler) Login(c *gin.Context) {
 	var req struct {
 		Email    string `json:"email"    binding:"required"`
@@ -94,7 +128,12 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	ok(c, http.StatusOK, "Login successful.", gin.H{"access_token": result.AccessToken})
 }
 
-// POST /api/v1/auth/logout
+// Logout godoc
+// @Summary      Logout (revoke refresh token)
+// @Tags         auth
+// @Produce      json
+// @Success      200  {object}  envelope
+// @Router       /auth/logout [post]
 func (h *AuthHandler) Logout(c *gin.Context) {
 	rawRefresh, _ := c.Cookie(refreshCookieName)
 	_ = h.auth.Logout(c.Request.Context(), rawRefresh)
@@ -102,7 +141,13 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 	ok(c, http.StatusOK, "Logged out.", nil)
 }
 
-// POST /api/v1/auth/refresh
+// Refresh godoc
+// @Summary      Refresh access token using HTTP-only refresh cookie
+// @Tags         auth
+// @Produce      json
+// @Success      200  {object}  envelope{data=object{access_token=string}}
+// @Failure      401  {object}  errorEnvelope
+// @Router       /auth/refresh [post]
 func (h *AuthHandler) Refresh(c *gin.Context) {
 	rawRefresh, err := c.Cookie(refreshCookieName)
 	if err != nil || rawRefresh == "" {
@@ -121,7 +166,15 @@ func (h *AuthHandler) Refresh(c *gin.Context) {
 	ok(c, http.StatusOK, "Token refreshed.", gin.H{"access_token": accessToken})
 }
 
-// POST /api/v1/auth/forgot-password
+// ForgotPassword godoc
+// @Summary      Request a password reset link
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        body  body  object{email=string}  true  "Registered email"
+// @Success      200  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Router       /auth/forgot-password [post]
 func (h *AuthHandler) ForgotPassword(c *gin.Context) {
 	var req struct {
 		Email string `json:"email" binding:"required"`
@@ -134,7 +187,15 @@ func (h *AuthHandler) ForgotPassword(c *gin.Context) {
 	ok(c, http.StatusOK, "If that email is registered, a reset link has been sent.", nil)
 }
 
-// POST /api/v1/auth/reset-password
+// ResetPassword godoc
+// @Summary      Reset password using token from email
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        body  body  object{token=string,password=string}  true  "Reset payload"
+// @Success      200  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Router       /auth/reset-password [post]
 func (h *AuthHandler) ResetPassword(c *gin.Context) {
 	var req struct {
 		Token    string `json:"token"    binding:"required"`
@@ -151,7 +212,17 @@ func (h *AuthHandler) ResetPassword(c *gin.Context) {
 	ok(c, http.StatusOK, "Password reset successfully.", nil)
 }
 
-// POST /api/v1/auth/change-password
+// ChangePassword godoc
+// @Summary      Change password (requires auth)
+// @Tags         auth
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        body  body  object{current_password=string,new_password=string}  true  "Passwords"
+// @Success      200  {object}  envelope
+// @Failure      400  {object}  errorEnvelope
+// @Failure      401  {object}  errorEnvelope
+// @Router       /auth/change-password [post]
 func (h *AuthHandler) ChangePassword(c *gin.Context) {
 	userID := mustUserID(c)
 	var req struct {
