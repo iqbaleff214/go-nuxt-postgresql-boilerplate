@@ -22,7 +22,7 @@ A production-ready full-stack boilerplate with a Go/Gin backend and Nuxt.js 3 fr
 | Frontend | Nuxt.js 3 (Vue 3), Tailwind CSS |
 | State | Pinia |
 | Validation | VeeValidate + Zod |
-| Backend | Go 1.22+, Gin |
+| Backend | Go 1.25+, Gin |
 | Database | PostgreSQL 16+, sqlc |
 | Auth | JWT (access + refresh) + TOTP 2FA |
 | Real-time | Gorilla WebSocket |

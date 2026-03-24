@@ -14,7 +14,7 @@ This repository is **in the specification phase**. The `backend/` and `frontend/
 | Frontend State | Pinia |
 | Frontend Validation | VeeValidate + Zod/valibot |
 | Package Manager (FE) | pnpm |
-| Backend | Go 1.22+ with Gin framework |
+| Backend | Go 1.25+ with Gin framework |
 | Database | PostgreSQL 16+ via sqlc (type-safe SQL, no ORM) |
 | Auth | JWT (access + refresh tokens) + TOTP 2FA |
 | Real-time | Gorilla WebSocket |

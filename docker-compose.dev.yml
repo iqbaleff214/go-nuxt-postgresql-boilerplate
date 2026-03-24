@@ -28,7 +28,7 @@ services:
       - backend
 
   backend:
-    image: golang:1.22-alpine
+    image: golang:1.25-alpine
     working_dir: /app
     volumes:
       - ./backend:/app
@@ -52,7 +52,7 @@ services:
         condition: service_healthy
 
   worker:
-    image: golang:1.22-alpine
+    image: golang:1.25-alpine
     working_dir: /app
     volumes:
       - ./backend:/app
