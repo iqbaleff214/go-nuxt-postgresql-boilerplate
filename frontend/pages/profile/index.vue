@@ -165,7 +165,7 @@ const initials = computed(() => {
           </div>
           <div class="flex-1 min-w-0">
             <p class="font-semibold text-gray-900">
-              {{ authStore.user.displayName || `${authStore.user.firstName} ${authStore.user.lastName}` }}
+              {{ authStore.user.displayName || `${authStore.user.firstName ?? ''} ${authStore.user.lastName ?? ''}` }}
             </p>
             <p class="text-sm text-gray-500 mt-0.5 truncate">{{ authStore.user.email }}</p>
             <div class="flex items-center gap-3 mt-3">
