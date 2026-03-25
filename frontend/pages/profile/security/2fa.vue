@@ -29,7 +29,7 @@ async function confirmSetup() {
   try {
     const res = await api.post<{ recovery_codes: string[] }>('/auth/2fa/confirm', { code: totpCode.value })
     recoveryCodes.value = res.data.recovery_codes
-    if (authStore.user) authStore.user.is2faEnabled = true
+    if (authStore.user) authStore.user.is_2fa_enabled = true
     step.value = 3
   }
   catch (err) {

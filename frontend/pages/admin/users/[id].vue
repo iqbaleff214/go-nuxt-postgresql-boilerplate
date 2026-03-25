@@ -28,9 +28,9 @@ onMounted(async () => {
     const res = await api.get<User>(`/admin/users/${userId.value}`)
     user.value = res.data
     Object.assign(form, {
-      firstName: res.data.firstName,
-      lastName: res.data.lastName,
-      displayName: res.data.displayName,
+      firstName: res.data.first_name,
+      lastName: res.data.last_name,
+      displayName: res.data.display_name,
       bio: res.data.bio ?? '',
       role: res.data.role,
       status: res.data.status,
@@ -112,7 +112,7 @@ async function save() {
     <form v-else class="card space-y-5" @submit.prevent="save">
       <div class="flex items-center justify-between pb-4 border-b border-gray-100">
         <div>
-          <h1 class="text-lg font-bold text-gray-900">{{ user?.displayName || `${user?.firstName} ${user?.lastName}` }}</h1>
+          <h1 class="text-lg font-bold text-gray-900">{{ user?.display_name || `${user?.first_name} ${user?.last_name}` }}</h1>
           <p class="text-xs text-gray-400 mt-0.5 font-mono">{{ user?.id }}</p>
         </div>
       </div>

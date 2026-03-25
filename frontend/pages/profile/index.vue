@@ -18,9 +18,9 @@ const profileSuccess = ref(false)
 
 watch(() => authStore.user, (u) => {
   if (!u) return
-  profileForm.firstName = u.firstName
-  profileForm.lastName = u.lastName
-  profileForm.displayName = u.displayName
+  profileForm.firstName = u.first_name
+  profileForm.lastName = u.last_name
+  profileForm.displayName = u.display_name
   profileForm.bio = u.bio ?? ''
 }, { immediate: true })
 
@@ -64,7 +64,7 @@ async function onAvatarChange(e: Event) {
   fd.append('avatar', file)
   try {
     const res = await api.upload<{ avatar_url: string }>('/profile/avatar', fd)
-    if (authStore.user) authStore.user.avatarUrl = res.data.avatar_url
+    if (authStore.user) authStore.user.avatar_url = res.data.avatar_url
   }
   catch (err) {
     avatarError.value = (err as ApiError).message ?? 'Upload failed'
@@ -104,7 +104,7 @@ async function requestDeletion() {
 const initials = computed(() => {
   const u = authStore.user
   if (!u) return '?'
-  return ((u.firstName?.[0] ?? '') + (u.lastName?.[0] ?? '')).toUpperCase() || u.email[0].toUpperCase()
+  return ((u.first_name?.[0] ?? '') + (u.last_name?.[0] ?? '')).toUpperCase() || u.email[0].toUpperCase()
 })
 </script>
 
@@ -153,9 +153,9 @@ const initials = computed(() => {
       <div class="card">
         <div class="flex items-center gap-5">
           <div class="relative shrink-0">
-            <div v-if="avatarPreview || authStore.user.avatarUrl">
+            <div v-if="avatarPreview || authStore.user.avatar_url">
               <img
-                :src="avatarPreview ?? authStore.user.avatarUrl"
+                :src="avatarPreview ?? authStore.user.avatar_url"
                 class="w-20 h-20 rounded-2xl object-cover"
               />
             </div>
@@ -165,7 +165,7 @@ const initials = computed(() => {
           </div>
           <div class="flex-1 min-w-0">
             <p class="font-semibold text-gray-900">
-              {{ authStore.user.displayName || `${authStore.user.firstName ?? ''} ${authStore.user.lastName ?? ''}` }}
+              {{ authStore.user.display_name || `${authStore.user.first_name ?? ''} ${authStore.user.last_name ?? ''}` }}
             </p>
             <p class="text-sm text-gray-500 mt-0.5 truncate">{{ authStore.user.email }}</p>
             <div class="flex items-center gap-3 mt-3">
@@ -228,6 +228,7 @@ const initials = computed(() => {
           <div>
             <h2 class="text-base font-semibold text-gray-900">Email address</h2>
             <p class="text-sm text-gray-500 mt-0.5">{{ authStore.user.email }}</p>
+
           </div>
           <button class="btn-secondary text-sm" @click="showEmailModal = true">Change</button>
         </div>

@@ -45,7 +45,7 @@ async function disable2fa() {
       password: disableForm.password,
       code: disableForm.code,
     })
-    if (authStore.user) authStore.user.is2faEnabled = false
+    if (authStore.user) authStore.user.is_2fa_enabled = false
     showDisableModal.value = false
   }
   catch (err) {
@@ -140,12 +140,12 @@ function copyRecoveryCodes() {
           <h2 class="text-base font-semibold text-gray-900">Two-factor authentication</h2>
           <p class="text-sm text-gray-500 mt-0.5">Add an extra layer of security to your account</p>
         </div>
-        <span :class="authStore.user.is2faEnabled ? 'badge-success' : 'badge-neutral'">
-          {{ authStore.user.is2faEnabled ? 'Enabled' : 'Disabled' }}
+        <span :class="authStore.user.is_2fa_enabled ? 'badge-success' : 'badge-neutral'">
+          {{ authStore.user.is_2fa_enabled ? 'Enabled' : 'Disabled' }}
         </span>
       </div>
 
-      <div v-if="!authStore.user.is2faEnabled" class="mt-5">
+      <div v-if="!authStore.user.is_2fa_enabled" class="mt-5">
         <NuxtLink to="/profile/security/2fa" class="btn-primary">Enable 2FA</NuxtLink>
       </div>
 

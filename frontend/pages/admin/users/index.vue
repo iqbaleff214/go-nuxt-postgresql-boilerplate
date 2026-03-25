@@ -155,7 +155,7 @@ function statusBadge(s: string) {
               <td colspan="6" class="px-5 py-12 text-center text-gray-400 text-sm">No users found</td>
             </tr>
             <tr v-for="u in users" :key="u.id" class="hover:bg-gray-50/50 transition-colors">
-              <td class="px-5 py-3.5 font-medium text-gray-900">{{ u.displayName || `${u.firstName} ${u.lastName}` }}</td>
+              <td class="px-5 py-3.5 font-medium text-gray-900">{{ u.display_name || `${u.first_name} ${u.last_name}` }}</td>
               <td class="px-5 py-3.5 text-gray-500">{{ u.email }}</td>
               <td class="px-5 py-3.5">
                 <span class="badge-neutral capitalize">{{ u.role }}</span>
@@ -164,7 +164,7 @@ function statusBadge(s: string) {
                 <span :class="statusBadge(u.status)" class="capitalize">{{ u.status }}</span>
               </td>
               <td class="px-5 py-3.5">
-                <div v-if="u.isEmailVerified" class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center">
+                <div v-if="u.is_email_verified" class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center">
                   <svg class="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
                   </svg>

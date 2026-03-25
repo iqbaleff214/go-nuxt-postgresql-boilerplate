@@ -13,7 +13,7 @@ async function handleLogout() {
 const initials = computed(() => {
   const u = authStore.user
   if (!u) return '?'
-  return ((u.firstName?.[0] ?? '') + (u.lastName?.[0] ?? '')).toUpperCase() || u.email[0].toUpperCase()
+  return ((u.first_name?.[0] ?? '') + (u.last_name?.[0] ?? '')).toUpperCase() || u.email[0].toUpperCase()
 })
 </script>
 
@@ -128,15 +128,15 @@ const initials = computed(() => {
         </div>
         <!-- Loaded -->
         <div v-else class="flex items-center gap-3 px-2">
-          <div v-if="authStore.user.avatarUrl" class="shrink-0">
-            <img :src="authStore.user.avatarUrl" class="w-8 h-8 rounded-full object-cover" />
+          <div v-if="authStore.user.avatar_url" class="shrink-0">
+            <img :src="authStore.user.avatar_url" class="w-8 h-8 rounded-full object-cover" />
           </div>
           <div v-else class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold shrink-0">
             {{ initials }}
           </div>
           <div class="flex-1 min-w-0">
             <p class="text-xs font-semibold text-gray-900 truncate">
-              {{ authStore.user.displayName || authStore.user.firstName || authStore.user.email }}
+              {{ authStore.user.display_name || authStore.user.first_name || authStore.user.email }}
             </p>
             <p class="text-[11px] text-gray-400 truncate capitalize">{{ authStore.user.role }}</p>
           </div>

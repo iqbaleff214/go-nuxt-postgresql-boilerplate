@@ -70,26 +70,26 @@ function formatDate(iso: string) {
         :key="n.id"
         :class="[
           'bg-white rounded-2xl border transition-all duration-150 cursor-pointer overflow-hidden flex',
-          !n.readAt
+          !n.read_at
             ? 'border-emerald-200 shadow-sm hover:shadow-md'
             : 'border-gray-100 hover:border-gray-200',
         ]"
-        @click="!n.readAt && markRead(n.id)"
+        @click="!n.read_at && markRead(n.id)"
       >
         <!-- Unread indicator strip -->
-        <div :class="['w-1 shrink-0', !n.readAt ? 'bg-emerald-500' : 'bg-transparent']" />
+        <div :class="['w-1 shrink-0', !n.read_at ? 'bg-emerald-500' : 'bg-transparent']" />
 
         <div class="flex-1 px-5 py-4">
           <div class="flex justify-between items-start gap-4">
             <div class="flex-1 min-w-0">
-              <p :class="['text-sm', !n.readAt ? 'font-semibold text-gray-900' : 'font-medium text-gray-700']">
+              <p :class="['text-sm', !n.read_at ? 'font-semibold text-gray-900' : 'font-medium text-gray-700']">
                 {{ n.title }}
               </p>
               <p v-if="n.body" class="text-sm text-gray-500 mt-0.5 truncate">{{ n.body }}</p>
             </div>
             <div class="flex items-center gap-2 shrink-0">
-              <span class="text-xs text-gray-400">{{ formatDate(n.createdAt) }}</span>
-              <span v-if="!n.readAt" class="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+              <span class="text-xs text-gray-400">{{ formatDate(n.created_at) }}</span>
+              <span v-if="!n.read_at" class="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
             </div>
           </div>
         </div>
