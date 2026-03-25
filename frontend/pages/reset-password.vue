@@ -76,13 +76,13 @@ const onSubmit = handleSubmit(async (values) => {
 
         <div>
           <label class="label">New password</label>
-          <input v-model="password" v-bind="passwordAttrs" type="password" class="input" placeholder="••••••••" autofocus />
+          <PasswordInput v-model="password" v-bind="passwordAttrs" :autofocus="true" />
           <p v-if="errors.password" class="mt-1.5 text-xs text-rose-600">{{ errors.password }}</p>
         </div>
 
         <div>
           <label class="label">Confirm password</label>
-          <input v-model="confirmPassword" v-bind="confirmPasswordAttrs" type="password" class="input" placeholder="••••••••" />
+          <PasswordInput v-model="confirmPassword" v-bind="confirmPasswordAttrs" />
           <p v-if="errors.confirmPassword" class="mt-1.5 text-xs text-rose-600">{{ errors.confirmPassword }}</p>
         </div>
 

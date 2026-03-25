@@ -65,7 +65,7 @@ const onSubmit = handleSubmit(async (values) => {
               Forgot password?
             </NuxtLink>
           </div>
-          <input v-model="password" v-bind="passwordAttrs" type="password" class="input" placeholder="••••••••" />
+          <PasswordInput v-model="password" v-bind="passwordAttrs" />
           <p v-if="errors.password" class="mt-1.5 text-xs text-rose-600">{{ errors.password }}</p>
         </div>
 

@@ -104,15 +104,15 @@ function copyRecoveryCodes() {
         </div>
         <div>
           <label class="label">Current password</label>
-          <input v-model="pwForm.currentPassword" type="password" class="input" placeholder="••••••••" />
+          <PasswordInput v-model="pwForm.currentPassword" />
         </div>
         <div>
           <label class="label">New password</label>
-          <input v-model="pwForm.newPassword" type="password" class="input" placeholder="••••••••" />
+          <PasswordInput v-model="pwForm.newPassword" />
         </div>
         <div>
           <label class="label">Confirm new password</label>
-          <input v-model="pwForm.confirmNewPassword" type="password" class="input" placeholder="••••••••" />
+          <PasswordInput v-model="pwForm.confirmNewPassword" />
         </div>
         <button type="submit" class="btn-primary">Update password</button>
       </form>
@@ -181,7 +181,7 @@ function copyRecoveryCodes() {
           </div>
           <div>
             <label class="label">Password</label>
-            <input v-model="disableForm.password" type="password" class="input" placeholder="••••••••" autofocus />
+            <PasswordInput v-model="disableForm.password" :autofocus="true" />
           </div>
           <div>
             <label class="label">Authenticator code</label>
@@ -209,7 +209,7 @@ function copyRecoveryCodes() {
           </div>
           <div>
             <label class="label">Password</label>
-            <input v-model="regenForm.password" type="password" class="input" placeholder="••••••••" autofocus />
+            <PasswordInput v-model="regenForm.password" :autofocus="true" />
           </div>
           <div>
             <label class="label">Authenticator code</label>
