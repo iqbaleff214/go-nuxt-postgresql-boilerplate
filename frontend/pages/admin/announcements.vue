@@ -31,8 +31,8 @@ async function send() {
 <template>
   <div class="max-w-lg">
     <div class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-900">System announcement</h1>
-      <p class="text-sm text-gray-500 mt-1">Broadcast a real-time notification to all active users.</p>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">System announcement</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Broadcast a real-time notification to all active users.</p>
     </div>
 
     <form class="card space-y-5" @submit.prevent="send">
@@ -70,7 +70,7 @@ async function send() {
           </svg>
           {{ sending ? 'Sending…' : 'Send announcement' }}
         </button>
-        <p class="text-xs text-gray-400">Delivered via WebSocket to all online users</p>
+        <p class="text-xs text-gray-400 dark:text-gray-500">Delivered via WebSocket to all online users</p>
       </div>
     </form>
   </div>

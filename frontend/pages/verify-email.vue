@@ -41,10 +41,10 @@ async function resend() {
 </script>
 
 <template>
-  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-10 text-center">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 sm:p-10 text-center">
     <!-- Loading -->
     <div v-if="status === 'loading'" class="space-y-4">
-      <div class="mx-auto w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center">
+      <div class="mx-auto w-14 h-14 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
         <svg class="w-6 h-6 text-gray-400 animate-spin" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -61,8 +61,8 @@ async function resend() {
         </svg>
       </div>
       <div>
-        <h1 class="text-xl font-bold text-gray-900">Email verified!</h1>
-        <p class="text-sm text-gray-500 mt-1.5">Your account is ready. You can now sign in.</p>
+        <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100">Email verified!</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1.5">Your account is ready. You can now sign in.</p>
       </div>
       <NuxtLink to="/login" class="btn-primary inline-flex">Go to sign in</NuxtLink>
     </div>
@@ -75,12 +75,12 @@ async function resend() {
         </svg>
       </div>
       <div>
-        <h1 class="text-xl font-bold text-gray-900">Verification failed</h1>
-        <p class="text-sm text-rose-600 mt-1.5">{{ errorMessage }}</p>
+        <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100">Verification failed</h1>
+        <p class="text-sm text-rose-600 dark:text-rose-400 mt-1.5">{{ errorMessage }}</p>
       </div>
 
-      <div class="text-left space-y-3 border-t border-gray-100 pt-6">
-        <p class="text-sm font-medium text-gray-700">Resend verification email</p>
+      <div class="text-left space-y-3 border-t border-gray-100 dark:border-gray-700 pt-6">
+        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Resend verification email</p>
         <div v-if="resendStatus === 'sent'" class="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 p-3.5 text-sm text-emerald-700">
           <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />

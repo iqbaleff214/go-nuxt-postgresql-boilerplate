@@ -36,7 +36,7 @@ async function submit() {
   <div class="max-w-lg">
     <!-- Breadcrumb -->
     <div class="flex items-center gap-2 text-sm mb-6">
-      <NuxtLink to="/admin/users" class="text-gray-400 hover:text-gray-600 transition-colors font-medium">Users</NuxtLink>
+      <NuxtLink to="/admin/users" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors font-medium">Users</NuxtLink>
       <svg class="w-3.5 h-3.5 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
       </svg>
@@ -45,8 +45,8 @@ async function submit() {
 
     <form class="card space-y-5" @submit.prevent="submit">
       <div class="pb-4 border-b border-gray-100">
-        <h1 class="text-lg font-bold text-gray-900">Create user</h1>
-        <p class="text-sm text-gray-500 mt-0.5">A temporary password will be emailed to the new user.</p>
+        <h1 class="text-lg font-bold text-gray-900 dark:text-gray-100">Create user</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">A temporary password will be emailed to the new user.</p>
       </div>
 
       <div v-if="error" class="flex items-center gap-2.5 rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-sm text-rose-700">

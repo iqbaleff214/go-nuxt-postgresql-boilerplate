@@ -213,7 +213,7 @@ const initials = computed(() => {
             <label class="label">Bio</label>
             <textarea v-model="profileForm.bio" class="input resize-none" rows="3" maxlength="500" placeholder="Tell us a bit about yourself…" />
           </div>
-          <div class="flex items-center justify-between pt-1">
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
             <button type="submit" class="btn-primary">Save changes</button>
             <NuxtLink to="/profile/security" class="text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors">
               Security settings →

@@ -31,13 +31,13 @@ async function submit() {
 <template>
   <div>
     <div class="mb-8">
-      <h1 class="text-2xl font-bold text-gray-900">Two-factor authentication</h1>
-      <p class="mt-1.5 text-sm text-gray-500">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Two-factor authentication</h1>
+      <p class="mt-1.5 text-sm text-gray-500 dark:text-gray-400">
         {{ useRecovery ? 'Enter one of your recovery codes.' : 'Enter the 6-digit code from your authenticator app.' }}
       </p>
     </div>
 
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-5 sm:p-8">
       <form class="space-y-5" @submit.prevent="submit">
         <div v-if="error" class="rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-sm text-rose-700 space-y-1">
           <div class="flex items-center gap-2">
@@ -57,7 +57,7 @@ async function submit() {
             inputmode="numeric"
             maxlength="6"
             pattern="\d{6}"
-            class="input text-center text-3xl tracking-[0.5em] font-mono"
+            class="input text-center text-2xl sm:text-3xl tracking-[0.4em] sm:tracking-[0.5em] font-mono"
             placeholder="000000"
             autofocus
           />
