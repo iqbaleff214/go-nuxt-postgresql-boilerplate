@@ -82,9 +82,9 @@ func (s *S3StorageService) GetSignedURL(ctx context.Context, path string, expire
 }
 
 // NewStorageService returns the correct backend based on config.
-func NewStorageService(ctx context.Context, storageBackend, storagePath, s3Endpoint, s3Bucket, s3AccessKey, s3SecretKey, s3Region, s3PublicURL string) (StorageService, error) {
+func NewStorageService(ctx context.Context, storageBackend, storagePath, baseURL, s3Endpoint, s3Bucket, s3AccessKey, s3SecretKey, s3Region, s3PublicURL string) (StorageService, error) {
 	if storageBackend == "s3" {
 		return NewS3StorageService(ctx, s3Endpoint, s3Bucket, s3AccessKey, s3SecretKey, s3Region, s3PublicURL)
 	}
-	return NewLocalStorageService(storagePath), nil
+	return NewLocalStorageService(storagePath, baseURL), nil
 }

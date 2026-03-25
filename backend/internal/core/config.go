@@ -10,9 +10,10 @@ import (
 
 type Config struct {
 	// App
-	AppName  string
-	AppEnv   string
-	Port     string
+	AppName     string
+	AppEnv      string
+	Port        string
+	AppBaseURL  string
 	FrontendURL string
 
 	// Security
@@ -61,6 +62,7 @@ func Load() (*Config, error) {
 		AppName:     getEnv("APP_NAME", "MyApp"),
 		AppEnv:      getEnv("APP_ENV", "development"),
 		Port:        getEnv("PORT", "8080"),
+		AppBaseURL:  getEnv("APP_BASE_URL", "http://localhost:8080"),
 		FrontendURL: getEnv("FRONTEND_URL", "http://localhost:3000"),
 
 		SecretKey:         mustEnv("SECRET_KEY"),

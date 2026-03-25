@@ -4,7 +4,6 @@ definePageMeta({ middleware: 'auth' })
 const authStore = useAuthStore()
 const notifStore = useNotificationsStore()
 const { wsConnected } = useNotifications()
-
 async function handleLogout() {
   await authStore.logout()
   await navigateTo('/login')
@@ -15,6 +14,7 @@ const initials = computed(() => {
   if (!u) return '?'
   return ((u.first_name?.[0] ?? '') + (u.last_name?.[0] ?? '')).toUpperCase() || u.email[0].toUpperCase()
 })
+
 </script>
 
 <template>

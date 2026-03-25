@@ -54,7 +54,7 @@ func SetupRouter(cfg *core.Config, db *pgxpool.Pool, rdb *redis.Client) *gin.Eng
 	// ── Services ──────────────────────────────────────────────────────────────
 	storage, err := service.NewStorageService(
 		context.Background(),
-		cfg.StorageBackend, cfg.StoragePath,
+		cfg.StorageBackend, cfg.StoragePath, cfg.AppBaseURL,
 		cfg.S3EndpointURL, cfg.S3BucketName,
 		cfg.S3AccessKey, cfg.S3SecretKey,
 		cfg.S3Region, cfg.S3PublicURL,

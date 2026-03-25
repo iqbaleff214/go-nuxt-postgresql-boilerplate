@@ -28,13 +28,13 @@ async function saveProfile() {
   profileError.value = ''
   profileSuccess.value = false
   try {
-    const res = await api.patch('/profile', {
+    await api.patch('/profile', {
       first_name: profileForm.firstName,
       last_name: profileForm.lastName,
       display_name: profileForm.displayName,
       bio: profileForm.bio,
     })
-    authStore.user = res.data as any
+    await authStore.fetchMe()
     profileSuccess.value = true
   }
   catch (err) {
@@ -63,8 +63,8 @@ async function onAvatarChange(e: Event) {
   const fd = new FormData()
   fd.append('avatar', file)
   try {
-    const res = await api.upload<{ avatar_url: string }>('/profile/avatar', fd)
-    if (authStore.user) authStore.user.avatar_url = res.data.avatar_url
+    await api.upload<{ avatar_url: string }>('/profile/avatar', fd)
+    await authStore.fetchMe()
   }
   catch (err) {
     avatarError.value = (err as ApiError).message ?? 'Upload failed'

@@ -48,7 +48,7 @@ async function save() {
   saveError.value = ''
   saveSuccess.value = false
   try {
-    const res = await api.patch<User>(`/admin/users/${userId.value}`, {
+    await api.patch<User>(`/admin/users/${userId.value}`, {
       first_name: form.firstName,
       last_name: form.lastName,
       display_name: form.displayName,
@@ -56,7 +56,8 @@ async function save() {
       role: form.role,
       status: form.status,
     })
-    user.value = res.data
+    const updated = await api.get<User>(`/admin/users/${userId.value}`)
+    user.value = updated.data
     saveSuccess.value = true
   }
   catch (err) {

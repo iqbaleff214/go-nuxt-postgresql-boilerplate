@@ -6,18 +6,19 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
 // LocalStorageService stores files on the local filesystem.
 type LocalStorageService struct {
-	basePath   string
-	servePrefix string
+	basePath    string
+	baseURL     string
 }
 
-func NewLocalStorageService(basePath string) *LocalStorageService {
+func NewLocalStorageService(basePath, baseURL string) *LocalStorageService {
 	_ = os.MkdirAll(basePath, 0755)
-	return &LocalStorageService{basePath: basePath, servePrefix: "/files"}
+	return &LocalStorageService{basePath: basePath, baseURL: strings.TrimRight(baseURL, "/")}
 }
 
 func (s *LocalStorageService) Upload(_ context.Context, file io.Reader, path string) (string, error) {
@@ -33,7 +34,7 @@ func (s *LocalStorageService) Upload(_ context.Context, file io.Reader, path str
 	if _, err := io.Copy(f, file); err != nil {
 		return "", fmt.Errorf("write file: %w", err)
 	}
-	return s.servePrefix + "/" + path, nil
+	return s.baseURL + "/files/" + path, nil
 }
 
 func (s *LocalStorageService) Delete(_ context.Context, path string) error {
@@ -41,5 +42,5 @@ func (s *LocalStorageService) Delete(_ context.Context, path string) error {
 }
 
 func (s *LocalStorageService) GetSignedURL(_ context.Context, path string, _ time.Duration) (string, error) {
-	return s.servePrefix + "/" + path, nil
+	return s.baseURL + "/files/" + path, nil
 }
