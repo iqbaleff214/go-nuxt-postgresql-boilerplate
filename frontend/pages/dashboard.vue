@@ -17,7 +17,7 @@ const notifStore = useNotificationsStore()
     </div>
 
     <!-- Welcome header -->
-    <div v-else class="flex items-center justify-between">
+    <div v-else class="flex flex-wrap items-center justify-between gap-3">
       <div>
         <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
           Welcome back, {{ authStore.user.display_name ?? authStore.user.first_name ?? 'there' }}

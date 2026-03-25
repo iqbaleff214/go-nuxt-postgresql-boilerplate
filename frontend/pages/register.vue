@@ -82,7 +82,7 @@ const onSubmit = handleSubmit(async (values) => {
           {{ serverError }}
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="label">First name</label>
             <input v-model="firstName" v-bind="firstNameAttrs" type="text" class="input" placeholder="Jane" />

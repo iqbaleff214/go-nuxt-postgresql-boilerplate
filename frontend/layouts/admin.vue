@@ -1,22 +1,75 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'superadmin' })
+
+const sidebarOpen = ref(false)
+const route = useRoute()
+watch(() => route.path, () => { sidebarOpen.value = false })
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
-    <!-- Sidebar -->
-    <aside class="w-60 bg-white dark:bg-gray-800 border-r border-gray-100 dark:border-gray-700 flex flex-col shrink-0 sticky top-0 h-screen">
-      <!-- Logo -->
-      <div class="h-16 flex items-center gap-2.5 px-5 border-b border-gray-100 dark:border-gray-700">
-        <div class="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center">
-          <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 lg:flex">
+
+    <!-- Mobile header -->
+    <header class="lg:hidden fixed top-0 inset-x-0 z-30 h-14 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between px-4">
+      <button
+        class="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+        @click="sidebarOpen = true"
+      >
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-6 rounded-md bg-emerald-500 flex items-center justify-center">
+          <svg class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <div>
-          <span class="font-bold text-gray-900 dark:text-gray-100 text-sm tracking-tight leading-none block">MyApp</span>
-          <span class="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Admin</span>
+        <span class="font-bold text-gray-900 dark:text-gray-100 tracking-tight text-sm">MyApp <span class="text-emerald-600 dark:text-emerald-400">Admin</span></span>
+      </div>
+      <ThemeSwitcher />
+    </header>
+
+    <!-- Sidebar backdrop -->
+    <Transition
+      enter-active-class="transition-opacity duration-200"
+      leave-active-class="transition-opacity duration-200"
+      enter-from-class="opacity-0"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="sidebarOpen"
+        class="lg:hidden fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+        @click="sidebarOpen = false"
+      />
+    </Transition>
+
+    <!-- Sidebar -->
+    <aside
+      class="fixed lg:sticky top-0 inset-y-0 left-0 z-50 w-64 lg:w-60 bg-white dark:bg-gray-800 border-r border-gray-100 dark:border-gray-700 flex flex-col h-screen transition-transform duration-300 ease-in-out lg:translate-x-0"
+      :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+    >
+      <!-- Logo -->
+      <div class="h-16 flex items-center justify-between gap-2.5 px-5 border-b border-gray-100 dark:border-gray-700">
+        <div class="flex items-center gap-2.5">
+          <div class="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center">
+            <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <div>
+            <span class="font-bold text-gray-900 dark:text-gray-100 text-sm tracking-tight leading-none block">MyApp</span>
+            <span class="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Admin</span>
+          </div>
         </div>
+        <button
+          class="lg:hidden p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          @click="sidebarOpen = false"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
 
       <!-- Nav -->
@@ -44,9 +97,9 @@ definePageMeta({ middleware: 'superadmin' })
         </NuxtLink>
       </nav>
 
-      <!-- Theme switcher + Back to app -->
-      <div class="px-3 py-3 border-t border-gray-100 dark:border-gray-700 space-y-2">
-        <div class="flex items-center justify-between px-2">
+      <!-- Theme + Back -->
+      <div class="px-3 py-3 border-t border-gray-100 dark:border-gray-700 space-y-1">
+        <div class="flex items-center justify-between px-3 py-1">
           <span class="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Theme</span>
           <ThemeSwitcher />
         </div>
@@ -63,8 +116,8 @@ definePageMeta({ middleware: 'superadmin' })
     </aside>
 
     <!-- Main -->
-    <div class="flex-1 flex flex-col min-w-0">
-      <main class="flex-1 p-8">
+    <div class="flex-1 flex flex-col min-w-0 pt-14 lg:pt-0">
+      <main class="flex-1 p-4 sm:p-6 lg:p-8">
         <slot />
       </main>
     </div>

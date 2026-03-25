@@ -85,13 +85,13 @@ async function save() {
           <div class="skeleton h-3 w-56" />
         </div>
       </div>
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="space-y-1.5"><div class="skeleton h-3 w-20" /><div class="skeleton h-10" /></div>
         <div class="space-y-1.5"><div class="skeleton h-3 w-20" /><div class="skeleton h-10" /></div>
       </div>
       <div class="space-y-1.5"><div class="skeleton h-3 w-28" /><div class="skeleton h-10" /></div>
       <div class="space-y-1.5"><div class="skeleton h-3 w-12" /><div class="skeleton h-20" /></div>
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="space-y-1.5"><div class="skeleton h-3 w-12" /><div class="skeleton h-10" /></div>
         <div class="space-y-1.5"><div class="skeleton h-3 w-14" /><div class="skeleton h-10" /></div>
       </div>
@@ -131,7 +131,7 @@ async function save() {
         Changes saved successfully.
       </div>
 
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="label">First name</label>
           <input v-model="form.firstName" type="text" class="input" />
@@ -152,7 +152,7 @@ async function save() {
         <textarea v-model="form.bio" class="input resize-none" rows="3" />
       </div>
 
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="label">Role</label>
           <select v-model="form.role" class="input">

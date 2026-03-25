@@ -56,7 +56,7 @@ async function submit() {
         {{ error }}
       </div>
 
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="label">First name</label>
           <input v-model="form.firstName" type="text" class="input" required autofocus />

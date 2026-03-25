@@ -129,7 +129,7 @@ const initials = computed(() => {
       <!-- Form skeleton -->
       <div class="card space-y-5">
         <div class="skeleton h-5 w-40" />
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="space-y-1.5"><div class="skeleton h-3 w-20" /><div class="skeleton h-10" /></div>
           <div class="space-y-1.5"><div class="skeleton h-3 w-20" /><div class="skeleton h-10" /></div>
         </div>
@@ -151,7 +151,7 @@ const initials = computed(() => {
     <template v-else>
       <!-- Avatar -->
       <div class="card">
-        <div class="flex items-center gap-5">
+        <div class="flex flex-wrap items-center gap-5">
           <div class="relative shrink-0">
             <div v-if="avatarPreview || authStore.user.avatar_url">
               <img
@@ -195,7 +195,7 @@ const initials = computed(() => {
             Profile updated successfully.
           </div>
 
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="label">First name</label>
               <input v-model="profileForm.firstName" type="text" class="input" />

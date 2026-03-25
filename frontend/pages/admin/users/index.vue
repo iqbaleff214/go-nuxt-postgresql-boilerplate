@@ -85,7 +85,7 @@ function statusBadge(s: string) {
 <template>
   <div>
     <!-- Header -->
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
       <div>
         <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Users</h1>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ total }} total users</p>
@@ -100,18 +100,18 @@ function statusBadge(s: string) {
 
     <!-- Filters -->
     <div class="flex flex-wrap gap-3 mb-5">
-      <div class="relative">
+      <div class="relative flex-1 min-w-0 sm:max-w-xs">
         <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
-        <input v-model="search" type="text" class="input pl-9 w-64" placeholder="Search name or email…" />
+        <input v-model="search" type="text" class="input pl-9" placeholder="Search name or email…" />
       </div>
-      <select v-model="role" class="input w-36">
+      <select v-model="role" class="input w-full sm:w-36">
         <option value="">All roles</option>
         <option value="user">User</option>
         <option value="superadmin">Superadmin</option>
       </select>
-      <select v-model="status" class="input w-36">
+      <select v-model="status" class="input w-full sm:w-36">
         <option value="">All statuses</option>
         <option value="active">Active</option>
         <option value="inactive">Inactive</option>
@@ -208,7 +208,7 @@ function statusBadge(s: string) {
     </div>
 
     <!-- Pagination -->
-    <div v-if="totalPages > 1" class="flex items-center justify-between mt-4">
+    <div v-if="totalPages > 1" class="flex flex-wrap items-center justify-between gap-3 mt-4">
       <p class="text-sm text-gray-500 dark:text-gray-400">Showing page {{ page }} of {{ totalPages }}</p>
       <div class="flex items-center gap-2">
         <button class="btn-secondary py-1.5 px-3 text-xs" :disabled="page <= 1" @click="page--">← Previous</button>
