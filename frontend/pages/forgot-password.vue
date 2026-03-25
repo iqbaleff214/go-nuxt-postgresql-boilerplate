@@ -16,11 +16,11 @@ async function submit() {
 <template>
   <div>
     <div class="mb-8">
-      <h1 class="text-2xl font-bold text-gray-900">Forgot your password?</h1>
-      <p class="mt-1.5 text-sm text-gray-500">No worries, we'll send you reset instructions.</p>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Forgot your password?</h1>
+      <p class="mt-1.5 text-sm text-gray-500 dark:text-gray-400">No worries, we'll send you reset instructions.</p>
     </div>
 
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-8">
       <div v-if="submitted" class="text-center py-4 space-y-4">
         <div class="mx-auto w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center">
           <svg class="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -28,8 +28,8 @@ async function submit() {
           </svg>
         </div>
         <div>
-          <p class="font-semibold text-gray-900">Check your email</p>
-          <p class="text-sm text-gray-500 mt-1">If an account with that email exists, you'll receive a reset link shortly.</p>
+          <p class="font-semibold text-gray-900 dark:text-gray-100">Check your email</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">If an account with that email exists, you'll receive a reset link shortly.</p>
         </div>
         <NuxtLink to="/login" class="btn-secondary inline-flex mx-auto">Back to sign in</NuxtLink>
       </div>

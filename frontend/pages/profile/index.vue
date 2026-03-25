@@ -111,8 +111,8 @@ const initials = computed(() => {
 <template>
   <div class="max-w-2xl space-y-6">
     <div>
-      <h1 class="text-2xl font-bold text-gray-900">Profile</h1>
-      <p class="text-sm text-gray-500 mt-1">Manage your personal information and preferences</p>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Profile</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage your personal information and preferences</p>
     </div>
 
     <!-- Skeleton -->
@@ -164,10 +164,10 @@ const initials = computed(() => {
             </div>
           </div>
           <div class="flex-1 min-w-0">
-            <p class="font-semibold text-gray-900">
+            <p class="font-semibold text-gray-900 dark:text-gray-100">
               {{ authStore.user.display_name || `${authStore.user.first_name ?? ''} ${authStore.user.last_name ?? ''}` }}
             </p>
-            <p class="text-sm text-gray-500 mt-0.5 truncate">{{ authStore.user.email }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5 truncate">{{ authStore.user.email }}</p>
             <div class="flex items-center gap-3 mt-3">
               <button class="btn-secondary text-sm py-1.5 px-3" @click="pickAvatar">Change photo</button>
               <span class="text-xs text-gray-400">JPEG, PNG, WebP · max 2 MB</span>
@@ -180,7 +180,7 @@ const initials = computed(() => {
 
       <!-- Profile info -->
       <div class="card">
-        <h2 class="text-base font-semibold text-gray-900 mb-5">Personal information</h2>
+        <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100 mb-5">Personal information</h2>
         <form class="space-y-4" @submit.prevent="saveProfile">
           <div v-if="profileError" class="flex items-center gap-2.5 rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-sm text-rose-700">
             <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -226,8 +226,8 @@ const initials = computed(() => {
       <div class="card">
         <div class="flex items-center justify-between">
           <div>
-            <h2 class="text-base font-semibold text-gray-900">Email address</h2>
-            <p class="text-sm text-gray-500 mt-0.5">{{ authStore.user.email }}</p>
+            <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">Email address</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ authStore.user.email }}</p>
 
           </div>
           <button class="btn-secondary text-sm" @click="showEmailModal = true">Change</button>
@@ -235,9 +235,9 @@ const initials = computed(() => {
       </div>
 
       <!-- Danger zone -->
-      <div class="rounded-2xl border border-rose-200 bg-white p-6">
+      <div class="rounded-2xl border border-rose-200 dark:border-rose-900/50 bg-white dark:bg-gray-800 p-6">
         <h2 class="text-base font-semibold text-rose-600 mb-1">Danger zone</h2>
-        <p class="text-sm text-gray-500 mb-4">Permanently delete your account and all associated data. This cannot be undone.</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Permanently delete your account and all associated data. This cannot be undone.</p>
         <button class="btn-danger text-sm" @click="showDeleteModal = true">Delete account</button>
       </div>
     </template>

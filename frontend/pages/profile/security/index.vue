@@ -82,13 +82,13 @@ function copyRecoveryCodes() {
 <template>
   <div class="max-w-2xl space-y-6">
     <div>
-      <h1 class="text-2xl font-bold text-gray-900">Security</h1>
-      <p class="text-sm text-gray-500 mt-1">Manage your password and two-factor authentication</p>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Security</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage your password and two-factor authentication</p>
     </div>
 
     <!-- Change password -->
     <div class="card">
-      <h2 class="text-base font-semibold text-gray-900 mb-5">Change password</h2>
+      <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100 mb-5">Change password</h2>
       <form class="space-y-4" @submit.prevent="changePassword">
         <div v-if="pwError" class="flex items-center gap-2.5 rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-sm text-rose-700">
           <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -137,8 +137,8 @@ function copyRecoveryCodes() {
       <template v-else>
       <div class="flex items-start justify-between mb-1">
         <div>
-          <h2 class="text-base font-semibold text-gray-900">Two-factor authentication</h2>
-          <p class="text-sm text-gray-500 mt-0.5">Add an extra layer of security to your account</p>
+          <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">Two-factor authentication</h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Add an extra layer of security to your account</p>
         </div>
         <span :class="authStore.user.is_2fa_enabled ? 'badge-success' : 'badge-neutral'">
           {{ authStore.user.is_2fa_enabled ? 'Enabled' : 'Disabled' }}
@@ -151,9 +151,9 @@ function copyRecoveryCodes() {
 
       <div v-else class="mt-5 space-y-5">
         <div>
-          <h3 class="text-sm font-semibold text-gray-700 mb-2.5">Recovery codes</h3>
-          <div v-if="recoveryCodes.length" class="bg-gray-50 rounded-xl border border-gray-100 p-4 font-mono text-xs grid grid-cols-2 gap-2 mb-3">
-            <span v-for="c in recoveryCodes" :key="c" class="text-gray-700">{{ c }}</span>
+          <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2.5">Recovery codes</h3>
+          <div v-if="recoveryCodes.length" class="bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-100 dark:border-gray-600 p-4 font-mono text-xs grid grid-cols-2 gap-2 mb-3">
+            <span v-for="c in recoveryCodes" :key="c" class="text-gray-700 dark:text-gray-300">{{ c }}</span>
           </div>
           <div class="flex flex-wrap gap-2">
             <button class="btn-secondary text-sm" @click="showRegenModal = true">Regenerate codes</button>

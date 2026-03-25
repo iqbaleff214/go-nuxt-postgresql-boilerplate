@@ -49,11 +49,11 @@ const onSubmit = handleSubmit(async (values) => {
 <template>
   <div>
     <div class="mb-8">
-      <h1 class="text-2xl font-bold text-gray-900">Set new password</h1>
-      <p class="mt-1.5 text-sm text-gray-500">Choose a strong password for your account.</p>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Set new password</h1>
+      <p class="mt-1.5 text-sm text-gray-500 dark:text-gray-400">Choose a strong password for your account.</p>
     </div>
 
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-8">
       <div v-if="success" class="text-center py-4 space-y-4">
         <div class="mx-auto w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center">
           <svg class="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -61,8 +61,8 @@ const onSubmit = handleSubmit(async (values) => {
           </svg>
         </div>
         <div>
-          <p class="font-semibold text-gray-900">Password updated!</p>
-          <p class="text-sm text-gray-500 mt-1">Redirecting you to sign in…</p>
+          <p class="font-semibold text-gray-900 dark:text-gray-100">Password updated!</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Redirecting you to sign in…</p>
         </div>
       </div>
 

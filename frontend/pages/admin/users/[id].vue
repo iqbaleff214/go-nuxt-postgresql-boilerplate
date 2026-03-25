@@ -70,11 +70,11 @@ async function save() {
   <div class="max-w-2xl">
     <!-- Breadcrumb -->
     <div class="flex items-center gap-2 text-sm mb-6">
-      <NuxtLink to="/admin/users" class="text-gray-400 hover:text-gray-600 transition-colors font-medium">Users</NuxtLink>
+      <NuxtLink to="/admin/users" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors font-medium">Users</NuxtLink>
       <svg class="w-3.5 h-3.5 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
       </svg>
-      <span class="text-gray-700 font-semibold">Edit user</span>
+      <span class="text-gray-700 dark:text-gray-300 font-semibold">Edit user</span>
     </div>
 
     <!-- Loading skeleton -->
@@ -113,8 +113,8 @@ async function save() {
     <form v-else class="card space-y-5" @submit.prevent="save">
       <div class="flex items-center justify-between pb-4 border-b border-gray-100">
         <div>
-          <h1 class="text-lg font-bold text-gray-900">{{ user?.display_name || `${user?.first_name} ${user?.last_name}` }}</h1>
-          <p class="text-xs text-gray-400 mt-0.5 font-mono">{{ user?.id }}</p>
+          <h1 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ user?.display_name || `${user?.first_name} ${user?.last_name}` }}</h1>
+          <p class="text-xs text-gray-400 dark:text-gray-500 mt-0.5 font-mono">{{ user?.id }}</p>
         </div>
       </div>
 

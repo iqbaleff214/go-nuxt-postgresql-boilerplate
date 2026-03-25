@@ -87,8 +87,8 @@ function statusBadge(s: string) {
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Users</h1>
-        <p class="text-sm text-gray-500 mt-0.5">{{ total }} total users</p>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Users</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ total }} total users</p>
       </div>
       <NuxtLink to="/admin/users/create" class="btn-primary">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -127,22 +127,22 @@ function statusBadge(s: string) {
     </div>
 
     <!-- Table -->
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
           <thead>
-            <tr class="border-b border-gray-100 bg-gray-50/50">
-              <th class="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Name</th>
-              <th class="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</th>
-              <th class="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Role</th>
-              <th class="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-              <th class="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Verified</th>
-              <th class="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
+            <tr class="border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/30">
+              <th class="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Name</th>
+              <th class="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Email</th>
+              <th class="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Role</th>
+              <th class="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Status</th>
+              <th class="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Verified</th>
+              <th class="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Actions</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-50">
+          <tbody class="divide-y divide-gray-50 dark:divide-gray-700">
             <template v-if="loading">
-              <tr v-for="i in 8" :key="i" class="border-b border-gray-50">
+              <tr v-for="i in 8" :key="i" class="border-b border-gray-50 dark:border-gray-700">
                 <td class="px-5 py-3.5"><div class="skeleton h-4 w-32" /></td>
                 <td class="px-5 py-3.5"><div class="skeleton h-4 w-40" /></td>
                 <td class="px-5 py-3.5"><div class="skeleton h-5 w-16 rounded-full" /></td>
@@ -152,11 +152,11 @@ function statusBadge(s: string) {
               </tr>
             </template>
             <tr v-else-if="users.length === 0">
-              <td colspan="6" class="px-5 py-12 text-center text-gray-400 text-sm">No users found</td>
+              <td colspan="6" class="px-5 py-12 text-center text-gray-400 dark:text-gray-500 text-sm">No users found</td>
             </tr>
-            <tr v-for="u in users" :key="u.id" class="hover:bg-gray-50/50 transition-colors">
-              <td class="px-5 py-3.5 font-medium text-gray-900">{{ u.display_name || `${u.first_name} ${u.last_name}` }}</td>
-              <td class="px-5 py-3.5 text-gray-500">{{ u.email }}</td>
+            <tr v-for="u in users" :key="u.id" class="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
+              <td class="px-5 py-3.5 font-medium text-gray-900 dark:text-gray-100">{{ u.display_name || `${u.first_name} ${u.last_name}` }}</td>
+              <td class="px-5 py-3.5 text-gray-500 dark:text-gray-400">{{ u.email }}</td>
               <td class="px-5 py-3.5">
                 <span class="badge-neutral capitalize">{{ u.role }}</span>
               </td>
@@ -164,12 +164,12 @@ function statusBadge(s: string) {
                 <span :class="statusBadge(u.status)" class="capitalize">{{ u.status }}</span>
               </td>
               <td class="px-5 py-3.5">
-                <div v-if="u.is_email_verified" class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center">
-                  <svg class="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div v-if="u.is_email_verified" class="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
+                  <svg class="w-3 h-3 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <div v-else class="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center">
+                <div v-else class="w-5 h-5 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                   <svg class="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
                   </svg>
@@ -209,10 +209,10 @@ function statusBadge(s: string) {
 
     <!-- Pagination -->
     <div v-if="totalPages > 1" class="flex items-center justify-between mt-4">
-      <p class="text-sm text-gray-500">Showing page {{ page }} of {{ totalPages }}</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">Showing page {{ page }} of {{ totalPages }}</p>
       <div class="flex items-center gap-2">
         <button class="btn-secondary py-1.5 px-3 text-xs" :disabled="page <= 1" @click="page--">← Previous</button>
-        <span class="text-sm text-gray-600 font-medium px-2">{{ page }}</span>
+        <span class="text-sm text-gray-600 dark:text-gray-400 font-medium px-2">{{ page }}</span>
         <button class="btn-secondary py-1.5 px-3 text-xs" :disabled="page >= totalPages" @click="page++">Next →</button>
       </div>
     </div>

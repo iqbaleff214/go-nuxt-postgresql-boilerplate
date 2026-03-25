@@ -3,7 +3,7 @@ definePageMeta({ middleware: 'auth' })
 
 const authStore = useAuthStore()
 const notifStore = useNotificationsStore()
-const { wsConnected } = useNotifications()
+useNotifications()
 async function handleLogout() {
   await authStore.logout()
   await navigateTo('/login')
@@ -18,17 +18,17 @@ const initials = computed(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 flex">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
     <!-- Sidebar -->
-    <aside class="w-60 bg-white border-r border-gray-100 flex flex-col shrink-0 sticky top-0 h-screen">
+    <aside class="w-60 bg-white dark:bg-gray-800 border-r border-gray-100 dark:border-gray-700 flex flex-col shrink-0 sticky top-0 h-screen">
       <!-- Logo -->
-      <div class="h-16 flex items-center gap-2.5 px-5 border-b border-gray-100">
+      <div class="h-16 flex items-center gap-2.5 px-5 border-b border-gray-100 dark:border-gray-700">
         <div class="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center shrink-0">
           <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <span class="font-bold text-gray-900 tracking-tight">MyApp</span>
+        <span class="font-bold text-gray-900 dark:text-gray-100 tracking-tight">MyApp</span>
       </div>
 
       <!-- Nav -->
@@ -37,8 +37,8 @@ const initials = computed(() => {
 
         <NuxtLink
           to="/dashboard"
-          class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition-all duration-150 hover:bg-gray-50 hover:text-gray-900"
-          active-class="bg-emerald-50 text-emerald-700 font-semibold"
+          class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 transition-all duration-150 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100"
+          active-class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-semibold"
         >
           <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -48,8 +48,8 @@ const initials = computed(() => {
 
         <NuxtLink
           to="/notifications"
-          class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition-all duration-150 hover:bg-gray-50 hover:text-gray-900"
-          active-class="bg-emerald-50 text-emerald-700 font-semibold"
+          class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 transition-all duration-150 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100"
+          active-class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-semibold"
         >
           <div class="relative shrink-0">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -61,7 +61,7 @@ const initials = computed(() => {
             >{{ notifStore.unreadCount > 9 ? '9+' : notifStore.unreadCount }}</span>
           </div>
           Notifications
-          <span v-if="notifStore.unreadCount > 0" class="ml-auto text-[10px] font-bold bg-rose-100 text-rose-600 rounded-full px-1.5 py-0.5">
+          <span v-if="notifStore.unreadCount > 0" class="ml-auto text-[10px] font-bold bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 rounded-full px-1.5 py-0.5">
             {{ notifStore.unreadCount }}
           </span>
         </NuxtLink>
@@ -70,8 +70,8 @@ const initials = computed(() => {
 
         <NuxtLink
           to="/profile"
-          class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition-all duration-150 hover:bg-gray-50 hover:text-gray-900"
-          active-class="bg-emerald-50 text-emerald-700 font-semibold"
+          class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 transition-all duration-150 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100"
+          active-class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-semibold"
         >
           <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -81,8 +81,8 @@ const initials = computed(() => {
 
         <NuxtLink
           to="/profile/security"
-          class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition-all duration-150 hover:bg-gray-50 hover:text-gray-900"
-          active-class="bg-emerald-50 text-emerald-700 font-semibold"
+          class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 transition-all duration-150 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100"
+          active-class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-semibold"
         >
           <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -95,8 +95,8 @@ const initials = computed(() => {
           <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-widest px-3 pt-4 mb-2">Admin</p>
           <NuxtLink
             to="/admin/users"
-            class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition-all duration-150 hover:bg-gray-50 hover:text-gray-900"
-            active-class="bg-emerald-50 text-emerald-700 font-semibold"
+            class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 transition-all duration-150 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100"
+            active-class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-semibold"
           >
             <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -105,8 +105,8 @@ const initials = computed(() => {
           </NuxtLink>
           <NuxtLink
             to="/admin/announcements"
-            class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition-all duration-150 hover:bg-gray-50 hover:text-gray-900"
-            active-class="bg-emerald-50 text-emerald-700 font-semibold"
+            class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 transition-all duration-150 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100"
+            active-class="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 font-semibold"
           >
             <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
@@ -116,8 +116,8 @@ const initials = computed(() => {
         </template>
       </nav>
 
-      <!-- User footer -->
-      <div class="px-3 py-4 border-t border-gray-100">
+      <!-- Theme switcher + User footer -->
+      <div class="px-3 py-3 border-t border-gray-100 dark:border-gray-700 space-y-3">
         <!-- Skeleton while user loads -->
         <div v-if="!authStore.user" class="flex items-center gap-3 px-2">
           <div class="skeleton w-8 h-8 rounded-full shrink-0" />
@@ -131,17 +131,18 @@ const initials = computed(() => {
           <div v-if="authStore.user.avatar_url" class="shrink-0">
             <img :src="authStore.user.avatar_url" class="w-8 h-8 rounded-full object-cover" />
           </div>
-          <div v-else class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold shrink-0">
+          <div v-else class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 flex items-center justify-center text-xs font-bold shrink-0">
             {{ initials }}
           </div>
           <div class="flex-1 min-w-0">
-            <p class="text-xs font-semibold text-gray-900 truncate">
+            <p class="text-xs font-semibold text-gray-900 dark:text-gray-100 truncate">
               {{ authStore.user.display_name || authStore.user.first_name || authStore.user.email }}
             </p>
             <p class="text-[11px] text-gray-400 truncate capitalize">{{ authStore.user.role }}</p>
           </div>
+          <ThemeSwitcher />
           <button
-            class="p-1.5 rounded-lg text-gray-400 hover:text-rose-500 hover:bg-rose-50 transition-colors shrink-0"
+            class="p-1.5 rounded-lg text-gray-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition-colors shrink-0"
             title="Sign out"
             @click="handleLogout"
           >
